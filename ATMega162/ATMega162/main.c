@@ -5,19 +5,27 @@
  * Author : Krist
  */ 
 
+#include "uart.h"
 #include <avr/io.h>
-#include <util/delay.h>
+#include <avr/delay.h>
+
+#define F_CPU 4915200UL			/* Define frequency */
+#define USART_BAUDRATE 9600
+#define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
+
 
 int main(void)
 {
-	DDRA |= (1 << PA0); 
-
-	while (1)
+	init_UART(BAUD_PRESCALE);
+	flush_UART();
+	
+	char c;
+	while(1)
 	{
-		PORTA |= (1 << PA0);
-		_delay_ms(10);
-		PORTA &= ~(1 << PA0);
-		_delay_ms(10);
+		c=recieve_char_UART();
+		transmit_char_UART(c);
+		stdout = &mystdout;
+		printf("Hello, world!\n");
 	}
 }
 
