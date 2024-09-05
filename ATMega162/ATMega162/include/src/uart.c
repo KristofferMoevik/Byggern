@@ -35,6 +35,22 @@ void transmit_char_UART(char letter){
 }
 
 
+void test_uart(long BAUD_PRESCALE){
+	init_UART(BAUD_PRESCALE);
+	flush_UART();
+	
+	char c;
+	while(1)
+	{
+		c=recieve_char_UART();
+		transmit_char_UART(c);
+		stdout = &mystdout;
+		printf("Hello, world!\n");
+	}
+	
+}
+
+
 //void send_string_UART(char *str);
 
 //char* recieve_string_UART();	

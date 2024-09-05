@@ -6,6 +6,9 @@
  */ 
 
 #include "uart.h"
+#include "sram.h"
+
+//#include "sram.h"
 #include <avr/io.h>
 #include <avr/delay.h>
 
@@ -14,18 +17,18 @@
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
 
+
 int main(void)
 {
+
+	MCUCR |= (1 << SRE);  // Enable external SRAM
 	init_UART(BAUD_PRESCALE);
 	flush_UART();
+	stdout = &mystdout;
+	printf("allahu akbar");
+	SRAM_test();
 	
-	char c;
-	while(1)
-	{
-		c=recieve_char_UART();
-		transmit_char_UART(c);
-		stdout = &mystdout;
-		printf("Hello, world!\n");
-	}
+	
+	
 }
 
