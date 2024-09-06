@@ -13,8 +13,6 @@
 #ifndef UART_H_
 #define UART_H_
 
-
-
 void init_UART(long BAUD_PRESCALE);
 
 unsigned char recieve_char_UART();
