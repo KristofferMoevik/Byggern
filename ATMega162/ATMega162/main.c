@@ -16,7 +16,18 @@
 #define USART_BAUDRATE 9600
 #define BAUD_PRESCALE (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
 
-
+void test_ADC(){
+	volatile char *ext_adc = (char *) 0x1400;
+	uint16_t ext_adc_size = 0x400;
+	while(1)
+	{
+		for (uint16_t i = 0; i < ext_adc_size; i++) {
+			uint8_t some_value = rand();
+			ext_adc[i] = some_value;
+		}
+	}
+	
+}
 
 int main(void)
 {
@@ -27,8 +38,6 @@ int main(void)
 	stdout = &mystdout;
 	printf("allahu akbar");
 	SRAM_test();
-	
-	
-	
+	test_ADC();	
 }
 
