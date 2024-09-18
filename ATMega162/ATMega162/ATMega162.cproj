@@ -139,10 +139,16 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="include\header\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\sram.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\src\adc.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\src\sram.c">
