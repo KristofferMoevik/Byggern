@@ -2,12 +2,13 @@
  * ATMega162.c
  *
  * Created: 04.09.2024 09:43:30
- * Author : Krist
+ * Author : Kristoffer
  */ 
 
 #include "uart.h"
 #include "sram.h"
 #include "adc.h"
+#include "oled.h"
 
 //#include "sram.h"
 #include <avr/io.h>
@@ -28,9 +29,7 @@ void test_ADC(){
 		uint8_t some_value = rand();
 		ext_adc[i] = some_value;
 	}
-	
 	printf("finished testing");
-	
 }
 
 void init_parallell_bus(){
@@ -45,6 +44,8 @@ int main(void)
 	SRAM_test();
 	test_ADC();
 	*/	
+	
+	/* --- LAB 3 code 
 	init_parallell_bus();
 	init_UART(BAUD_PRESCALE);
 	flush_UART();
@@ -59,6 +60,23 @@ int main(void)
 		printf("The value of myNumber is: %d %d %d %d\n\r ", readings.joystick_left_right, readings.joystick_up_down, readings.slider_left, readings.slider_right);
 		_delay_ms(10);
 	}
+	*/
 	
+	
+	init_parallell_bus();
+	init_UART(BAUD_PRESCALE);
+	flush_UART();
+	stdout = &mystdout;
+	oled_init();
+	oled_clear_display();
+	while(1){
+		oled_clear_display();
+		_delay_ms(100);
+		oled_write_char('A');
+		_delay_ms(100);
+	}/*
+	oled_write_char('A', 0, 0);*/
+	
+
 }
 

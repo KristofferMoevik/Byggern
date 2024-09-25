@@ -4,6 +4,10 @@
 
 include\src\adc.c
 
+include\src\fonts.c
+
+include\src\oled.c
+
 include\src\sram.c
 
 include\src\uart.c

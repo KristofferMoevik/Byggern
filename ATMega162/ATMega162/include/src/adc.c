@@ -4,8 +4,8 @@
  * Created: 18.09.2024 10:27:20
  *  Author: eveneha
  */ 
-
 #include "adc.h"
+#include "../header/addresses.h"
 
 void init_clock_adc() {
     DDRD |= (1 << PD4);
@@ -20,7 +20,7 @@ void init_clock_adc() {
 adc_channels read_channels(){
 	 
 	adc_channels adc_readings;
-	volatile uint8_t *ext_adc = (uint8_t *) 0x1400; 
+	volatile uint8_t *ext_adc = (uint8_t *) ADDR_BASE + ADDR_OFFSET_ADC; 
 	ext_adc[0] = 0;
 	adc_readings.joystick_up_down = ext_adc[0];
 	adc_readings.joystick_left_right = ext_adc[0];

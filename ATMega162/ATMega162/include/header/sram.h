@@ -5,12 +5,14 @@
  *  Author: eveneha
  */ 
 
-
+#pragma once
 #ifndef SRAM_H_
 #define SRAM_H_
 
+
 #include <stdlib.h>
 #include "uart.h"
+
 
 void SRAM_test(void);
 

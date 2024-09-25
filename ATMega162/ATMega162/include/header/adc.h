@@ -5,7 +5,7 @@
  *  Author: eveneha
  */ 
 
-
+#pragma once
 #ifndef ADC_H_
 #define ADC_H_
 

@@ -142,13 +142,28 @@
     <Compile Include="include\header\adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\oled.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\sram.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\uart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\addresses.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\src\adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\src\fonts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\src\oled.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\src\sram.c">
