@@ -3,29 +3,29 @@ ATMega162.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000004da  2**0
+  0 .data         0000006a  00800100  00000488  000004fc  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000486  00000000  00000000  00000054  2**1
+  1 .text         00000488  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  000004da  2**0
+  2 .comment      00000030  00000000  00000000  00000566  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000050c  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000598  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 000000b0  00000000  00000000  00000548  2**0
+  4 .debug_aranges 000000a8  00000000  00000000  000005d4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000012b5  00000000  00000000  000005f8  2**0
+  5 .debug_info   00001246  00000000  00000000  0000067c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000009f5  00000000  00000000  000018ad  2**0
+  6 .debug_abbrev 00000a1c  00000000  00000000  000018c2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000712  00000000  00000000  000022a2  2**0
+  7 .debug_line   000006e1  00000000  00000000  000022de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000178  00000000  00000000  000029b4  2**2
+  8 .debug_frame  00000158  00000000  00000000  000029c0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000005a6  00000000  00000000  00002b2c  2**0
+  9 .debug_str    0000058f  00000000  00000000  00002b18  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000554  00000000  00000000  000030d2  2**0
+ 10 .debug_loc    0000047c  00000000  00000000  000030a7  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000078  00000000  00000000  00003626  2**0
+ 11 .debug_ranges 00000070  00000000  00000000  00003523  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -312,18 +312,18 @@ Disassembly of section .text:
  258:	11 e0       	ldi	r17, 0x01	; 1
  25a:	a0 e0       	ldi	r26, 0x00	; 0
  25c:	b1 e0       	ldi	r27, 0x01	; 1
- 25e:	e6 e8       	ldi	r30, 0x86	; 134
+ 25e:	e8 e8       	ldi	r30, 0x88	; 136
  260:	f4 e0       	ldi	r31, 0x04	; 4
  262:	02 c0       	rjmp	.+4      	; 0x268 <__do_copy_data+0x10>
  264:	05 90       	lpm	r0, Z+
  266:	0d 92       	st	X+, r0
- 268:	a0 30       	cpi	r26, 0x00	; 0
+ 268:	aa 36       	cpi	r26, 0x6A	; 106
  26a:	b1 07       	cpc	r27, r17
  26c:	d9 f7       	brne	.-10     	; 0x264 <__do_copy_data+0xc>
 
 0000026e <__do_clear_bss>:
  26e:	21 e0       	ldi	r18, 0x01	; 1
- 270:	a0 e0       	ldi	r26, 0x00	; 0
+ 270:	aa e6       	ldi	r26, 0x6A	; 106
  272:	b1 e0       	ldi	r27, 0x01	; 1
  274:	01 c0       	rjmp	.+2      	; 0x278 <.do_clear_bss_start>
 
@@ -331,85 +331,133 @@ Disassembly of section .text:
  276:	1d 92       	st	X+, r1
 
 00000278 <.do_clear_bss_start>:
- 278:	a0 30       	cpi	r26, 0x00	; 0
+ 278:	aa 36       	cpi	r26, 0x6A	; 106
  27a:	b2 07       	cpc	r27, r18
  27c:	e1 f7       	brne	.-8      	; 0x276 <.do_clear_bss_loop>
- 27e:	0e 94 3f 02 	call	0x47e	; 0x47e <main>
- 282:	0c 94 41 02 	jmp	0x482	; 0x482 <_exit>
+ 27e:	0e 94 40 02 	call	0x480	; 0x480 <main>
+ 282:	0c 94 42 02 	jmp	0x484	; 0x484 <_exit>
 
 00000286 <__bad_interrupt>:
  286:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000028a <send_command>:
-}
+#pragma once
+#include "oled.h"
+#include <avr/pgmspace.h>
 
-void oled_write_char_to_pos(char c, int page, int col){
-	oled_goto_pos(page,col);
-	send_char(c);
-}
- 28a:	80 93 00 10 	sts	0x1000, r24	; 0x801000 <__bss_end+0xf00>
+void send_command(uint8_t cmd){
+	OLED_CONTROL = cmd; 
+ 28a:	80 93 00 10 	sts	0x1000, r24	; 0x801000 <__bss_end+0xe96>
  28e:	08 95       	ret
 
 00000290 <send_data>:
- 290:	80 93 00 12 	sts	0x1200, r24	; 0x801200 <__bss_end+0x1100>
+}
+
+void send_data(uint8_t data){
+	OLED_DATA = data; 
+ 290:	80 93 00 12 	sts	0x1200, r24	; 0x801200 <__bss_end+0x1096>
  294:	08 95       	ret
 
 00000296 <oled_init>:
+}
+
+
+void oled_init() {
+    
+	send_command(0xAE);  // display off
  296:	8e ea       	ldi	r24, 0xAE	; 174
  298:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0xA1);  // segment remap
  29c:	81 ea       	ldi	r24, 0xA1	; 161
  29e:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0xDA);  // common pads hardware: alternative
  2a2:	8a ed       	ldi	r24, 0xDA	; 218
  2a4:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x12);  // send alternative pad configuration
  2a8:	82 e1       	ldi	r24, 0x12	; 18
  2aa:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0xC8);  // common output scan direction: com63~com0
  2ae:	88 ec       	ldi	r24, 0xC8	; 200
  2b0:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    
+	send_command(0xA8);  // multiplex ratio mode: 63
  2b4:	88 ea       	ldi	r24, 0xA8	; 168
  2b6:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x3F);  // ratio value
  2ba:	8f e3       	ldi	r24, 0x3F	; 63
  2bc:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    
+	send_command(0xD5);  // display divide ratio/oscillator frequency mode
  2c0:	85 ed       	ldi	r24, 0xD5	; 213
  2c2:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x80);  // frequency value
  2c6:	80 e8       	ldi	r24, 0x80	; 128
  2c8:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0x81);  // contrast control
  2cc:	81 e8       	ldi	r24, 0x81	; 129
  2ce:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x50);  // contrast value
  2d2:	80 e5       	ldi	r24, 0x50	; 80
  2d4:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0xD9);  // set pre-charge period
  2d8:	89 ed       	ldi	r24, 0xD9	; 217
  2da:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x21);  // pre-charge value
  2de:	81 e2       	ldi	r24, 0x21	; 33
  2e0:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0x20);  // Set Memory Addressing Mode
  2e4:	80 e2       	ldi	r24, 0x20	; 32
  2e6:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x02);  // set to page addressing mode
  2ea:	82 e0       	ldi	r24, 0x02	; 2
  2ec:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0xDB);  // VCOM deselect level mode
  2f0:	8b ed       	ldi	r24, 0xDB	; 219
  2f2:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x30);  // deselect level value
  2f6:	80 e3       	ldi	r24, 0x30	; 48
  2f8:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0xAD);  // master configuration
  2fc:	8d ea       	ldi	r24, 0xAD	; 173
  2fe:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0x00);  // master config value
  302:	80 e0       	ldi	r24, 0x00	; 0
  304:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	
+    send_command(0xA4);  // output follows RAM content
  308:	84 ea       	ldi	r24, 0xA4	; 164
  30a:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0xA6);  // set normal display
  30e:	86 ea       	ldi	r24, 0xA6	; 166
  310:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+    send_command(0xAF);  // display on
  314:	8f ea       	ldi	r24, 0xAF	; 175
  316:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
  31a:	08 95       	ret
 
 0000031c <oled_goto_pos>:
+			send_data(0x0);	
+		}
+	}
+}
+
+void oled_goto_pos(int page_start, int segment){
  31c:	cf 93       	push	r28
  31e:	df 93       	push	r29
  320:	eb 01       	movw	r28, r22
+	send_command(page_start	| 0xB0); // Set page
  322:	80 6b       	ori	r24, 0xB0	; 176
  324:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	send_command(segment & 0x0F);
  328:	8c 2f       	mov	r24, r28
  32a:	8f 70       	andi	r24, 0x0F	; 15
  32c:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+	send_command(((segment & 0xF0) >> 4) | (0x10));
  330:	ce 01       	movw	r24, r28
  332:	80 7f       	andi	r24, 0xF0	; 240
  334:	99 27       	eor	r25, r25
@@ -423,189 +471,242 @@ void oled_write_char_to_pos(char c, int page, int col){
  344:	87 95       	ror	r24
  346:	80 61       	ori	r24, 0x10	; 16
  348:	0e 94 45 01 	call	0x28a	; 0x28a <send_command>
+}
  34c:	df 91       	pop	r29
  34e:	cf 91       	pop	r28
  350:	08 95       	ret
 
 00000352 <oled_clear_screen>:
- 352:	cf 93       	push	r28
- 354:	df 93       	push	r29
- 356:	60 e0       	ldi	r22, 0x00	; 0
- 358:	70 e0       	ldi	r23, 0x00	; 0
- 35a:	80 e0       	ldi	r24, 0x00	; 0
- 35c:	90 e0       	ldi	r25, 0x00	; 0
- 35e:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
- 362:	c0 e0       	ldi	r28, 0x00	; 0
- 364:	d0 e0       	ldi	r29, 0x00	; 0
- 366:	0e c0       	rjmp	.+28     	; 0x384 <oled_clear_screen+0x32>
- 368:	60 e0       	ldi	r22, 0x00	; 0
- 36a:	70 e0       	ldi	r23, 0x00	; 0
- 36c:	ce 01       	movw	r24, r28
- 36e:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
- 372:	04 c0       	rjmp	.+8      	; 0x37c <oled_clear_screen+0x2a>
- 374:	80 e0       	ldi	r24, 0x00	; 0
- 376:	0e 94 48 01 	call	0x290	; 0x290 <send_data>
- 37a:	21 96       	adiw	r28, 0x01	; 1
- 37c:	c1 38       	cpi	r28, 0x81	; 129
- 37e:	d1 05       	cpc	r29, r1
- 380:	cc f7       	brge	.-14     	; 0x374 <oled_clear_screen+0x22>
- 382:	21 96       	adiw	r28, 0x01	; 1
- 384:	c8 30       	cpi	r28, 0x08	; 8
- 386:	d1 05       	cpc	r29, r1
- 388:	7c f3       	brlt	.-34     	; 0x368 <oled_clear_screen+0x16>
- 38a:	df 91       	pop	r29
- 38c:	cf 91       	pop	r28
- 38e:	08 95       	ret
-
-00000390 <send_char>:
- 390:	1f 93       	push	r17
- 392:	cf 93       	push	r28
- 394:	df 93       	push	r29
- 396:	18 2f       	mov	r17, r24
- 398:	c0 e0       	ldi	r28, 0x00	; 0
- 39a:	d0 e0       	ldi	r29, 0x00	; 0
- 39c:	11 c0       	rjmp	.+34     	; 0x3c0 <send_char+0x30>
- 39e:	81 2f       	mov	r24, r17
- 3a0:	90 e0       	ldi	r25, 0x00	; 0
- 3a2:	fc 01       	movw	r30, r24
- 3a4:	ee 0f       	add	r30, r30
- 3a6:	ff 1f       	adc	r31, r31
- 3a8:	ee 0f       	add	r30, r30
- 3aa:	ff 1f       	adc	r31, r31
- 3ac:	e8 0f       	add	r30, r24
- 3ae:	f9 1f       	adc	r31, r25
- 3b0:	ec 0f       	add	r30, r28
- 3b2:	fd 1f       	adc	r31, r29
- 3b4:	e0 59       	subi	r30, 0x90	; 144
- 3b6:	ff 4f       	sbci	r31, 0xFF	; 255
- 3b8:	84 91       	lpm	r24, Z
- 3ba:	0e 94 48 01 	call	0x290	; 0x290 <send_data>
- 3be:	21 96       	adiw	r28, 0x01	; 1
- 3c0:	c5 30       	cpi	r28, 0x05	; 5
- 3c2:	d1 05       	cpc	r29, r1
- 3c4:	64 f3       	brlt	.-40     	; 0x39e <send_char+0xe>
- 3c6:	df 91       	pop	r29
- 3c8:	cf 91       	pop	r28
- 3ca:	1f 91       	pop	r17
- 3cc:	08 95       	ret
-
-000003ce <oled_print_string>:
-
-void oled_print_string(char str[]){
- 3ce:	0f 93       	push	r16
- 3d0:	1f 93       	push	r17
- 3d2:	cf 93       	push	r28
- 3d4:	df 93       	push	r29
- 3d6:	8c 01       	movw	r16, r24
-	for (int i = 0; i < strlen(str); i++){
- 3d8:	c0 e0       	ldi	r28, 0x00	; 0
- 3da:	d0 e0       	ldi	r29, 0x00	; 0
- 3dc:	07 c0       	rjmp	.+14     	; 0x3ec <oled_print_string+0x1e>
-		send_char(str[i]);
- 3de:	f8 01       	movw	r30, r16
- 3e0:	ec 0f       	add	r30, r28
- 3e2:	fd 1f       	adc	r31, r29
- 3e4:	80 81       	ld	r24, Z
- 3e6:	0e 94 c8 01 	call	0x390	; 0x390 <send_char>
-	oled_goto_pos(page,col);
-	send_char(c);
+    send_command(0xAF);  // display on
+	
 }
 
-void oled_print_string(char str[]){
+
+void oled_clear_screen(){
+ 352:	0f 93       	push	r16
+ 354:	1f 93       	push	r17
+ 356:	cf 93       	push	r28
+ 358:	df 93       	push	r29
+	oled_goto_pos(0,0);
+ 35a:	60 e0       	ldi	r22, 0x00	; 0
+ 35c:	70 e0       	ldi	r23, 0x00	; 0
+ 35e:	80 e0       	ldi	r24, 0x00	; 0
+ 360:	90 e0       	ldi	r25, 0x00	; 0
+ 362:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
+	int pages = 8;
+	int coloums = 128;
+	for (int i = 0; i < pages; i++){
+ 366:	00 e0       	ldi	r16, 0x00	; 0
+ 368:	10 e0       	ldi	r17, 0x00	; 0
+ 36a:	11 c0       	rjmp	.+34     	; 0x38e <oled_clear_screen+0x3c>
+		oled_goto_pos(i,0);
+ 36c:	60 e0       	ldi	r22, 0x00	; 0
+ 36e:	70 e0       	ldi	r23, 0x00	; 0
+ 370:	c8 01       	movw	r24, r16
+ 372:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
+		for (int ii = 0; ii < coloums; ii++){
+ 376:	c0 e0       	ldi	r28, 0x00	; 0
+ 378:	d0 e0       	ldi	r29, 0x00	; 0
+ 37a:	04 c0       	rjmp	.+8      	; 0x384 <oled_clear_screen+0x32>
+			send_data(0x0);	
+ 37c:	80 e0       	ldi	r24, 0x00	; 0
+ 37e:	0e 94 48 01 	call	0x290	; 0x290 <send_data>
+	oled_goto_pos(0,0);
+	int pages = 8;
+	int coloums = 128;
+	for (int i = 0; i < pages; i++){
+		oled_goto_pos(i,0);
+		for (int ii = 0; ii < coloums; ii++){
+ 382:	21 96       	adiw	r28, 0x01	; 1
+ 384:	c0 38       	cpi	r28, 0x80	; 128
+ 386:	d1 05       	cpc	r29, r1
+ 388:	cc f3       	brlt	.-14     	; 0x37c <oled_clear_screen+0x2a>
+
+void oled_clear_screen(){
+	oled_goto_pos(0,0);
+	int pages = 8;
+	int coloums = 128;
+	for (int i = 0; i < pages; i++){
+ 38a:	0f 5f       	subi	r16, 0xFF	; 255
+ 38c:	1f 4f       	sbci	r17, 0xFF	; 255
+ 38e:	08 30       	cpi	r16, 0x08	; 8
+ 390:	11 05       	cpc	r17, r1
+ 392:	64 f3       	brlt	.-40     	; 0x36c <oled_clear_screen+0x1a>
+		oled_goto_pos(i,0);
+		for (int ii = 0; ii < coloums; ii++){
+			send_data(0x0);	
+		}
+	}
+}
+ 394:	df 91       	pop	r29
+ 396:	cf 91       	pop	r28
+ 398:	1f 91       	pop	r17
+ 39a:	0f 91       	pop	r16
+ 39c:	08 95       	ret
+
+0000039e <send_char>:
+	send_command(page_start	| 0xB0); // Set page
+	send_command(segment & 0x0F);
+	send_command(((segment & 0xF0) >> 4) | (0x10));
+}
+
+void send_char(char c){
+ 39e:	1f 93       	push	r17
+ 3a0:	cf 93       	push	r28
+ 3a2:	df 93       	push	r29
+ 3a4:	18 2f       	mov	r17, r24
+	for (int i = 0; i < font_size; i++){
+ 3a6:	c0 e0       	ldi	r28, 0x00	; 0
+ 3a8:	d0 e0       	ldi	r29, 0x00	; 0
+ 3aa:	12 c0       	rjmp	.+36     	; 0x3d0 <send_char+0x32>
+		char letter_byte = pgm_read_byte(&font5[c - 32][i]);
+ 3ac:	81 2f       	mov	r24, r17
+ 3ae:	90 e0       	ldi	r25, 0x00	; 0
+ 3b0:	80 97       	sbiw	r24, 0x20	; 32
+ 3b2:	fc 01       	movw	r30, r24
+ 3b4:	ee 0f       	add	r30, r30
+ 3b6:	ff 1f       	adc	r31, r31
+ 3b8:	ee 0f       	add	r30, r30
+ 3ba:	ff 1f       	adc	r31, r31
+ 3bc:	e8 0f       	add	r30, r24
+ 3be:	f9 1f       	adc	r31, r25
+ 3c0:	ec 0f       	add	r30, r28
+ 3c2:	fd 1f       	adc	r31, r29
+ 3c4:	e0 59       	subi	r30, 0x90	; 144
+ 3c6:	ff 4f       	sbci	r31, 0xFF	; 255
+ 3c8:	84 91       	lpm	r24, Z
+		send_data(letter_byte);
+ 3ca:	0e 94 48 01 	call	0x290	; 0x290 <send_data>
+	send_command(segment & 0x0F);
+	send_command(((segment & 0xF0) >> 4) | (0x10));
+}
+
+void send_char(char c){
+	for (int i = 0; i < font_size; i++){
+ 3ce:	21 96       	adiw	r28, 0x01	; 1
+ 3d0:	c5 30       	cpi	r28, 0x05	; 5
+ 3d2:	d1 05       	cpc	r29, r1
+ 3d4:	5c f3       	brlt	.-42     	; 0x3ac <send_char+0xe>
+		char letter_byte = pgm_read_byte(&font5[c - 32][i]);
+		send_data(letter_byte);
+	}
+	
+}
+ 3d6:	df 91       	pop	r29
+ 3d8:	cf 91       	pop	r28
+ 3da:	1f 91       	pop	r17
+ 3dc:	08 95       	ret
+
+000003de <oled_print_string>:
+
+void oled_print_string(char str[], int line){
+ 3de:	0f 93       	push	r16
+ 3e0:	1f 93       	push	r17
+ 3e2:	cf 93       	push	r28
+ 3e4:	df 93       	push	r29
+ 3e6:	8c 01       	movw	r16, r24
+ 3e8:	cb 01       	movw	r24, r22
+	oled_goto_pos(line,0);
+ 3ea:	60 e0       	ldi	r22, 0x00	; 0
+ 3ec:	70 e0       	ldi	r23, 0x00	; 0
+ 3ee:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
 	for (int i = 0; i < strlen(str); i++){
- 3ea:	21 96       	adiw	r28, 0x01	; 1
- 3ec:	f8 01       	movw	r30, r16
- 3ee:	01 90       	ld	r0, Z+
- 3f0:	00 20       	and	r0, r0
- 3f2:	e9 f7       	brne	.-6      	; 0x3ee <oled_print_string+0x20>
- 3f4:	31 97       	sbiw	r30, 0x01	; 1
- 3f6:	e0 1b       	sub	r30, r16
- 3f8:	f1 0b       	sbc	r31, r17
- 3fa:	ce 17       	cp	r28, r30
- 3fc:	df 07       	cpc	r29, r31
- 3fe:	78 f3       	brcs	.-34     	; 0x3de <oled_print_string+0x10>
+ 3f2:	c0 e0       	ldi	r28, 0x00	; 0
+ 3f4:	d0 e0       	ldi	r29, 0x00	; 0
+ 3f6:	07 c0       	rjmp	.+14     	; 0x406 <__DATA_REGION_LENGTH__+0x6>
+		send_char(str[i]);
+ 3f8:	f8 01       	movw	r30, r16
+ 3fa:	ec 0f       	add	r30, r28
+ 3fc:	fd 1f       	adc	r31, r29
+ 3fe:	80 81       	ld	r24, Z
+ 400:	0e 94 cf 01 	call	0x39e	; 0x39e <send_char>
+	
+}
+
+void oled_print_string(char str[], int line){
+	oled_goto_pos(line,0);
+	for (int i = 0; i < strlen(str); i++){
+ 404:	21 96       	adiw	r28, 0x01	; 1
+ 406:	f8 01       	movw	r30, r16
+ 408:	01 90       	ld	r0, Z+
+ 40a:	00 20       	and	r0, r0
+ 40c:	e9 f7       	brne	.-6      	; 0x408 <__DATA_REGION_LENGTH__+0x8>
+ 40e:	31 97       	sbiw	r30, 0x01	; 1
+ 410:	e0 1b       	sub	r30, r16
+ 412:	f1 0b       	sbc	r31, r17
+ 414:	ce 17       	cp	r28, r30
+ 416:	df 07       	cpc	r29, r31
+ 418:	78 f3       	brcs	.-34     	; 0x3f8 <oled_print_string+0x1a>
 		send_char(str[i]);
 	}
 }
- 400:	df 91       	pop	r29
- 402:	cf 91       	pop	r28
- 404:	1f 91       	pop	r17
- 406:	0f 91       	pop	r16
- 408:	08 95       	ret
+ 41a:	df 91       	pop	r29
+ 41c:	cf 91       	pop	r28
+ 41e:	1f 91       	pop	r17
+ 420:	0f 91       	pop	r16
+ 422:	08 95       	ret
 
-0000040a <init_external_memory_bus>:
+00000424 <init_external_memory_bus>:
 		_delay_ms(100);
 		uint8_t some_value = rand();
 		ext_adc[i] = some_value;
 	}
 	printf("finished testing");
 }
- 40a:	80 e8       	ldi	r24, 0x80	; 128
- 40c:	85 bf       	out	0x35, r24	; 53
- 40e:	88 e0       	ldi	r24, 0x08	; 8
- 410:	86 bf       	out	0x36, r24	; 54
- 412:	80 e2       	ldi	r24, 0x20	; 32
- 414:	80 bf       	out	0x30, r24	; 48
- 416:	08 95       	ret
+ 424:	80 e8       	ldi	r24, 0x80	; 128
+ 426:	85 bf       	out	0x35, r24	; 53
+ 428:	88 e0       	ldi	r24, 0x08	; 8
+ 42a:	86 bf       	out	0x36, r24	; 54
+ 42c:	80 e2       	ldi	r24, 0x20	; 32
+ 42e:	80 bf       	out	0x30, r24	; 48
+ 430:	08 95       	ret
 
-00000418 <test_lab_4>:
- 418:	cf 93       	push	r28
- 41a:	df 93       	push	r29
- 41c:	cd b7       	in	r28, 0x3d	; 61
- 41e:	de b7       	in	r29, 0x3e	; 62
- 420:	64 97       	sbiw	r28, 0x14	; 20
- 422:	0f b6       	in	r0, 0x3f	; 63
- 424:	f8 94       	cli
- 426:	de bf       	out	0x3e, r29	; 62
- 428:	0f be       	out	0x3f, r0	; 63
- 42a:	cd bf       	out	0x3d, r28	; 61
- 42c:	0e 94 05 02 	call	0x40a	; 0x40a <init_external_memory_bus>
- 430:	0e 94 4b 01 	call	0x296	; 0x296 <oled_init>
- 434:	0e 94 a9 01 	call	0x352	; 0x352 <oled_clear_screen>
- 438:	80 e5       	ldi	r24, 0x50	; 80
- 43a:	8a 83       	std	Y+2, r24	; 0x02
- 43c:	89 e6       	ldi	r24, 0x69	; 105
- 43e:	8b 83       	std	Y+3, r24	; 0x03
- 440:	60 e0       	ldi	r22, 0x00	; 0
- 442:	70 e0       	ldi	r23, 0x00	; 0
- 444:	81 e0       	ldi	r24, 0x01	; 1
- 446:	90 e0       	ldi	r25, 0x00	; 0
- 448:	0e 94 8e 01 	call	0x31c	; 0x31c <oled_goto_pos>
- 44c:	ce 01       	movw	r24, r28
- 44e:	01 96       	adiw	r24, 0x01	; 1
- 450:	0e 94 e7 01 	call	0x3ce	; 0x3ce <oled_print_string>
- 454:	2f ef       	ldi	r18, 0xFF	; 255
- 456:	8f ef       	ldi	r24, 0xFF	; 255
- 458:	9e e0       	ldi	r25, 0x0E	; 14
- 45a:	21 50       	subi	r18, 0x01	; 1
- 45c:	80 40       	sbci	r24, 0x00	; 0
- 45e:	90 40       	sbci	r25, 0x00	; 0
- 460:	e1 f7       	brne	.-8      	; 0x45a <test_lab_4+0x42>
- 462:	00 c0       	rjmp	.+0      	; 0x464 <test_lab_4+0x4c>
- 464:	00 00       	nop
- 466:	0e 94 a9 01 	call	0x352	; 0x352 <oled_clear_screen>
- 46a:	2f ef       	ldi	r18, 0xFF	; 255
- 46c:	8f ef       	ldi	r24, 0xFF	; 255
- 46e:	9e e0       	ldi	r25, 0x0E	; 14
- 470:	21 50       	subi	r18, 0x01	; 1
- 472:	80 40       	sbci	r24, 0x00	; 0
- 474:	90 40       	sbci	r25, 0x00	; 0
- 476:	e1 f7       	brne	.-8      	; 0x470 <test_lab_4+0x58>
- 478:	00 c0       	rjmp	.+0      	; 0x47a <test_lab_4+0x62>
- 47a:	00 00       	nop
- 47c:	dd cf       	rjmp	.-70     	; 0x438 <test_lab_4+0x20>
+00000432 <test_lab_4>:
+ 432:	0e 94 12 02 	call	0x424	; 0x424 <init_external_memory_bus>
+ 436:	0e 94 4b 01 	call	0x296	; 0x296 <oled_init>
+ 43a:	0e 94 a9 01 	call	0x352	; 0x352 <oled_clear_screen>
+ 43e:	60 e0       	ldi	r22, 0x00	; 0
+ 440:	70 e0       	ldi	r23, 0x00	; 0
+ 442:	82 e4       	ldi	r24, 0x42	; 66
+ 444:	91 e0       	ldi	r25, 0x01	; 1
+ 446:	0e 94 ef 01 	call	0x3de	; 0x3de <oled_print_string>
+ 44a:	61 e0       	ldi	r22, 0x01	; 1
+ 44c:	70 e0       	ldi	r23, 0x00	; 0
+ 44e:	87 e4       	ldi	r24, 0x47	; 71
+ 450:	91 e0       	ldi	r25, 0x01	; 1
+ 452:	0e 94 ef 01 	call	0x3de	; 0x3de <oled_print_string>
+ 456:	2f ef       	ldi	r18, 0xFF	; 255
+ 458:	8f ef       	ldi	r24, 0xFF	; 255
+ 45a:	9e e0       	ldi	r25, 0x0E	; 14
+ 45c:	21 50       	subi	r18, 0x01	; 1
+ 45e:	80 40       	sbci	r24, 0x00	; 0
+ 460:	90 40       	sbci	r25, 0x00	; 0
+ 462:	e1 f7       	brne	.-8      	; 0x45c <test_lab_4+0x2a>
+ 464:	00 c0       	rjmp	.+0      	; 0x466 <test_lab_4+0x34>
+ 466:	00 00       	nop
+ 468:	0e 94 a9 01 	call	0x352	; 0x352 <oled_clear_screen>
+ 46c:	2f ef       	ldi	r18, 0xFF	; 255
+ 46e:	8f ef       	ldi	r24, 0xFF	; 255
+ 470:	9e e0       	ldi	r25, 0x0E	; 14
+ 472:	21 50       	subi	r18, 0x01	; 1
+ 474:	80 40       	sbci	r24, 0x00	; 0
+ 476:	90 40       	sbci	r25, 0x00	; 0
+ 478:	e1 f7       	brne	.-8      	; 0x472 <test_lab_4+0x40>
+ 47a:	00 c0       	rjmp	.+0      	; 0x47c <test_lab_4+0x4a>
+ 47c:	00 00       	nop
+ 47e:	df cf       	rjmp	.-66     	; 0x43e <test_lab_4+0xc>
 
-0000047e <main>:
+00000480 <main>:
 #include <time.h>
 
 
 int main(void)
 {
 	test_lab_4();
- 47e:	0e 94 0c 02 	call	0x418	; 0x418 <test_lab_4>
+ 480:	0e 94 19 02 	call	0x432	; 0x432 <test_lab_4>
 
-00000482 <_exit>:
- 482:	f8 94       	cli
+00000484 <_exit>:
+ 484:	f8 94       	cli
 
-00000484 <__stop_program>:
- 484:	ff cf       	rjmp	.-2      	; 0x484 <__stop_program>
+00000486 <__stop_program>:
+ 486:	ff cf       	rjmp	.-2      	; 0x486 <__stop_program>

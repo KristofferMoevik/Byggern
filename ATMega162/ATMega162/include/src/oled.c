@@ -60,32 +60,28 @@ void oled_clear_screen(){
 	int coloums = 128;
 	for (int i = 0; i < pages; i++){
 		oled_goto_pos(i,0);
-		for (int ii = 0; i > coloums; i++){
-			send_data(0x00);	
+		for (int ii = 0; ii < coloums; ii++){
+			send_data(0x0);	
 		}
 	}
 }
 
 void oled_goto_pos(int page_start, int segment){
-	send_command(0xB0 | page_start); // Set page
+	send_command(page_start	| 0xB0); // Set page
 	send_command(segment & 0x0F);
-	send_command(((segment & 0xf0) >> 4) | (0x10));
+	send_command(((segment & 0xF0) >> 4) | (0x10));
 }
 
 void send_char(char c){
 	for (int i = 0; i < font_size; i++){
-		char letter_byte = pgm_read_byte(&font5[c][i]);
+		char letter_byte = pgm_read_byte(&font5[c - 32][i]);
 		send_data(letter_byte);
 	}
 	
 }
 
-void oled_write_char_to_pos(char c, int page, int col){
-	oled_goto_pos(page,col);
-	send_char(c);
-}
-
-void oled_print_string(char str[]){
+void oled_print_string(char str[], int line){
+	oled_goto_pos(line,0);
 	for (int i = 0; i < strlen(str); i++){
 		send_char(str[i]);
 	}

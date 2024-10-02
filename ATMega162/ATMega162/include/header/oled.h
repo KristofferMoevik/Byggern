@@ -29,6 +29,6 @@ void oled_clear_screen();
 void oled_goto_pos(int line, int col);
 void send_char(char c);
 void oled_write_char_to_pos(char c, int page, int col);
-void oled_print_string(char str[]);
+void oled_print_string(char str[], int line);
 
 #endif /* OLED_H_ */
