@@ -142,6 +142,9 @@
     <Compile Include="include\header\adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\external_memory_bus.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\fonts.h">
       <SubType>compile</SubType>
     </Compile>
@@ -149,6 +152,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\sram.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\tests.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\uart.h">

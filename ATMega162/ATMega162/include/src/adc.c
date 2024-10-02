@@ -28,3 +28,5 @@ adc_channels read_channels(){
 	adc_readings.slider_right = ext_adc[0];
 	return adc_readings;
 }
+
+

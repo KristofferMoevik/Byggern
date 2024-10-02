@@ -4,11 +4,15 @@
  * Library of fonts
  * Large: 8x8, normal: 5x7 and small: 4x7
  */
+#pragma once
 #ifndef FONTS_H_
 #define FONTS_H_
 
 
+
 #include <avr/pgmspace.h>
+
+#define font_size 5
 
 // Font 8x8 - Large
 const unsigned char PROGMEM font8[95][8];

@@ -5,6 +5,7 @@
  *  Author: eveneha
  */ 
 
+#pragma once
 
 #include "fonts.h"
 

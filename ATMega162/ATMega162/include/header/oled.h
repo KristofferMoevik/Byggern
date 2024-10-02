@@ -24,15 +24,11 @@
 #define OLED_DATA *((volatile char*)ADDR_BASE + ADDR_OFFSET_OLED_D)
 
 
-const uint8_t font5x7[26][5];
-
 void oled_init();
-void oled_clear_display();
-void oled_write_char(char c);
-void oled_printf(char text[]);
-
-
-
-
+void oled_clear_screen();
+void oled_goto_pos(int line, int col);
+void send_char(char c);
+void oled_write_char_to_pos(char c, int page, int col);
+void oled_print_string(char str[]);
 
 #endif /* OLED_H_ */

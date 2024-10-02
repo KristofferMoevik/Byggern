@@ -8,7 +8,7 @@
 #include "uart.h"
 
 
-void init_UART(long BAUD_PRESCALE){
+void init_UART(){
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(BAUD_PRESCALE>>8); //Baudrate reg
 	UBRR0L = (unsigned char)BAUD_PRESCALE; //Baudrate reg
@@ -37,8 +37,8 @@ void transmit_char_UART(char letter){
 }
 
 
-void test_uart(long BAUD_PRESCALE){
-	init_UART(BAUD_PRESCALE);
+void test_uart(){
+	init_UART();
 	flush_UART();
 	
 	char c;
@@ -46,13 +46,9 @@ void test_uart(long BAUD_PRESCALE){
 	{
 		c=recieve_char_UART();
 		transmit_char_UART(c);
-		stdout = &mystdout;
+		stdout = &uart_out;
 		printf("Hello, world!\n");
 	}
 	
 }
-
-
-//void send_string_UART(char *str);
-
-//char* recieve_string_UART();	
+	
