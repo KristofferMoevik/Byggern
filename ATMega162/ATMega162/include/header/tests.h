@@ -40,8 +40,10 @@ void test_lab_4(){
 	oled_init();
 	oled_clear_screen();
 	while(1){
-		oled_print_string("pung", 0);
 		oled_print_string("pikk", 1);
+		_delay_ms(1000);
+		oled_clear_screen();
+		oled_print_string("pung", 0);
 		_delay_ms(1000);
 		oled_clear_screen();
 		_delay_ms(1000);

@@ -148,7 +148,16 @@
     <Compile Include="include\header\fonts.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\joystick.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\mcp2515.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\oled.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\spi.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\sram.h">

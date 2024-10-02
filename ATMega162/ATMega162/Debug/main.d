@@ -24,7 +24,8 @@ main.d main.o: .././main.c ../include/header/uart.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  ../include/header/addresses.h ../include/header/tests.h \
  ../include/header/external_memory_bus.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\time.h
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\time.h \
+ ../include/header/mcp2515.h ../include/header/spi.h
 
 ../include/header/uart.h:
 
@@ -85,3 +86,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../include/header/external_memory_bus.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\time.h:
+
+../include/header/mcp2515.h:
+
+../include/header/spi.h:

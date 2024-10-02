@@ -24,15 +24,10 @@ typedef struct
 	int slider_right;
 } adc_channels;
 
-
-//volatile char *ADC_MEMORY_ADDRESS = (char *) 0x1400;
-
-
 void init_clock_adc();
 
 void adc_init();
 
 adc_channels read_channels();
-
 
 #endif /* ADC_H_ */
