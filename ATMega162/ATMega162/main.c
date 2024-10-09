@@ -26,10 +26,30 @@ int main(void)
 	flush_UART();
 	stdout = &uart_out;
 	printf("test");
-	can_init();
+	int fail = can_init();
+	if (!fail){
+		printf("successfully initializes");
+	}
+	while (1)
+	{
+		char address = MCP_RXF0SIDH;
+		char d = can_read(address);
+		printf("%d \n", d);
+		
+		_delay_ms(500); 
+		char data = 1;
+		can_write(address, data);
+		_delay_ms(500);
+		d = can_read(address);
+		printf("%d \n", d);
+		
+		_delay_ms(500);
+		data = 0;
+		can_write(address, data);
+		_delay_ms(500);
+		
+	}
 	
-	char data = can_read();
-	printf("%data", data);
 	
 }
 
