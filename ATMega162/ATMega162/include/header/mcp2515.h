@@ -162,6 +162,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
 
+
 char can_read(int address){
 	PORTB &= ~(1<<PB4);
 	char instruction = 0b00000011;
@@ -190,22 +191,33 @@ void can_write(char address, char data){
 
 void can_request_to_send(int buffer){
 	PORTB &= ~(1<<PB4);
-	int instruction = 0b10000000 | buffer;
-	SPI_MasterTransmit(instruction)
+	SPI_MasterTransmit(buffer);
 	PORTB |= (1<<PB4);
 }
 
-void can_read_status(){
-	PORTB &= ~(1<<PB4)
+char can_read_status(){
+	PORTB &= ~(1<<PB4);
 	SPI_MasterTransmit(MCP_READ_STATUS);
 	char data1 = SPI_MasterRecieve();
 	char data2 = SPI_MasterRecieve();
+	
 	PORTB |= (1<<PB4);
 	return data1;
 }
 
+char can_read_rx_status(){
+	PORTB &= ~(1<<PB4);
+	SPI_MasterTransmit(MCP_RX_STATUS);
+	char data1 = SPI_MasterRecieve();
+	char data2 = SPI_MasterRecieve();
+	
+	PORTB |= (1<<PB4);
+	return data1;
+}
+
+
 void can_bit_modify_instruction(int address, int mask_byte, int data_byte){
-	PORTB &= ~(1<<PB4)
+	PORTB &= ~(1<<PB4);
 	SPI_MasterTransmit(MCP_BITMOD);
 	SPI_MasterTransmit(address);
 	SPI_MasterTransmit(mask_byte);
@@ -213,17 +225,61 @@ void can_bit_modify_instruction(int address, int mask_byte, int data_byte){
 	PORTB |= (1<<PB4);
 }
 
+void can_send_message(int message_id, int8_t data){
+	// message id 0-8
+	// Load id to buffer 0
+	int MCP_TXB0SIDL = 0x32;
+	can_write(MCP_TXB0SIDL, 0b00100000); // TODO gjør at det ikke er hardcodet
+	int MCP_TXB0SIDH = 0x31;
+	can_write(MCP_TXB0SIDH, 0b00000000);
+	// load length
+	int MCP_TXB0DLC = 0x35;
+	can_write(MCP_TXB0DLC, 0b00000001);
+	// load data
+	int MCP_TXB0DM = 0x36;
+	can_write(MCP_TXB0DM, data);
+	
+	// Enable buffer
+	can_write(MCP_TXB0CTRL, 0b00001000);
+	// Request to send buffer
+	can_request_to_send(MCP_RTS_TX0);
+}
+
+int can_recieve_message(){
+	// Wait for CANINTF.RX0IF flag to be high
+	char status = can_read(MCP_TXB1CTRL);
+	char data = can_read(MCP_CANINTF);
+	//printf("%b \n\r", data);
+	while(!(data & 0b00000010)){
+		//data = can_read(MCP_CANINTF);
+		printf("data is facked  %n \n\r", data);
+		
+	}
+	
+	
+	int id_high = can_read(MCP_RXB1SIDH);
+	int MCP_RXB1SIDL = 0x72;
+	int id_low = can_read(MCP_RXB1SIDL);
+	int MCP_RXB1DLC = 0x75;
+	int data_lenght_buffer = can_read(MCP_RXB1DLC);
+	int MCP_RXB1D0 = 0x76;
+	int data1 = can_read(MCP_RXB1D0); 
+	
+	return data1;
+}
+
 uint8_t can_init(){
 	SPI_MasterInit();
 	//set configuration mode
 	can_reset();
-	_delay_ms(50);
+	_delay_ms(1000);
 	char value = can_read(MCP_CANSTAT);
 	if ((value & MODE_MASK) != MODE_CONFIG){
 		printf (" MCP2515 is NOT in configuration mode after reset !\n");
 		return 1;
+	} else {
+		printf(" MCP2515 is in config mode");
 	}
-	
 	
 	can_write(MCP_CANCTRL, MODE_LOOPBACK);
 	int d = can_read(MCP_CANSTAT);
@@ -232,6 +288,7 @@ uint8_t can_init(){
 	can_write(MCP_CNF1, 0b00000011);
 	can_write(MCP_CNF2, 0b10110001);
 	can_write(MCP_CNF3, 0b00000101);
+	can_write(MCP_CANINTE, (MCP_RX_INT | MCP_TX_INT));
 	
 	return 0;
 	

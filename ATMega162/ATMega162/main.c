@@ -30,24 +30,19 @@ int main(void)
 	if (!fail){
 		printf("successfully initializes");
 	}
+	int i = 0;
 	while (1)
 	{
-		char address = MCP_RXF0SIDH;
-		char d = can_read(address);
-		printf("%d \n", d);
-		
-		_delay_ms(500); 
-		char data = 1;
-		can_write(address, data);
+		can_send_message(1,i);
+		_delay_ms(1000);
+		int status = can_read_rx_status();
+		printf("dd %i, %i \n\r", status);
 		_delay_ms(500);
-		d = can_read(address);
-		printf("%d \n", d);
-		
-		_delay_ms(500);
-		data = 0;
-		can_write(address, data);
-		_delay_ms(500);
-		
+		int data = can_recieve_message();
+		int status2 = can_read_rx_status();
+		printf("dd %i, %i \n\r", status2);
+		//printf("dd %n \n\r", data);
+		++i;
 	}
 	
 	

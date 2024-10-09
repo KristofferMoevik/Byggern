@@ -22,17 +22,14 @@ void SPI_MasterInit(void)
 
 void SPI_MasterTransmit(char data)
 {
-	/* Start transmission */
 	SPDR = data;
-	/* Wait for transmission complete */
 	while(!(SPSR & (1<<SPIF)))
 	;
 }
 
 char SPI_MasterRecieve(){
 	SPDR = 0x00;
-	while(!(SPSR & (1<<SPIF)))
-	;
+	while(!(SPSR & (1<<SPIF)));
 	char data = SPDR;
 	return data;
 }
