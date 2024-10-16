@@ -30,19 +30,51 @@ int main(void)
 	if (!fail){
 		printf("successfully initializes");
 	}
-	int i = 0;
+	uint8_t i = 0;
 	while (1)
 	{
-		can_send_message(1,i);
+		can_message msg_send;
+		msg_send.id_lower = 0b00100000;
+		msg_send.id_higher = 0b00000000;
+		msg_send.message_length_bytes = 8;
+		
+		msg_send.data[0] = i;
+		msg_send.data[1] = i+1;
+		msg_send.data[2] = i+2;
+		msg_send.data[3] = i+3;
+		msg_send.data[4] = i+4;
+		msg_send.data[5] = i+5;
+		msg_send.data[6] = i+6;
+		msg_send.data[7] = i+7;
+		can_send_message(msg_send);
+		printf("sent this %i ", i);
+		printf(" %i ", i+1);
+		printf(" %i ", i+2);
+		printf(" %i ", i+3);
+		printf(" %i ", i+4);
+		printf(" %i ", i+5);
+		printf(" %i ", i+6);
+		printf(" %i \n\r", i+7);
+		
+		_delay_ms(100);
+		
+		uint8_t data[8];
+		can_recieve_message(data);
+		printf("reci this %i ", data[0]);
+		printf(" %i ", data[1]);
+		printf(" %i ", data[2]);
+		printf(" %i ", data[3]);
+		printf(" %i ", data[4]);
+		printf(" %i ", data[5]);
+		printf(" %i ", data[6]);
+		printf(" %i \n\r", data[7]);
+		
+		printf("\n\r");
+		
 		_delay_ms(1000);
-		int status = can_read_rx_status();
-		printf("dd %i, %i \n\r", status);
-		_delay_ms(500);
-		int data = can_recieve_message();
-		int status2 = can_read_rx_status();
-		printf("dd %i, %i \n\r", status2);
-		//printf("dd %n \n\r", data);
-		++i;
+		
+		i = i + 8;
+		
 	}
 	
 	

@@ -163,6 +163,41 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_MERRF		0x80
 
 
+// Heimelaga
+
+#define MCP_TXB0SIDL    0x32
+#define MCP_TXB0SIDH    0x31
+#define MCP_TXB0DLC     0x35
+#define MCP_TXB0D0      0x36
+#define MCP_TXB0D0      0x36
+#define MCP_TXB0D1      0x37		    
+#define MCP_TXB0D2      0x38
+#define MCP_TXB0D3      0x39
+#define MCP_TXB0D4      0x3a
+#define MCP_TXB0D5      0x3b
+#define MCP_TXB0D6      0x3c
+#define MCP_TXB0D7      0x3d
+
+#define MCP_RXB0SIDL    0x62
+#define MCP_RXB0DLC     0x65
+#define MCP_RXB0D0      0x66	
+#define MCP_RXB0D1      0x67
+#define MCP_RXB0D2      0x68
+#define MCP_RXB0D3      0x69	
+#define MCP_RXB0D4      0x6a	
+#define MCP_RXB0D5      0x6b	
+#define MCP_RXB0D6      0x6c	
+#define MCP_RXB0D7      0x6d
+
+typedef struct
+{
+	uint8_t id_lower;
+	uint8_t id_higher;
+	uint8_t message_length_bytes;
+	uint8_t data[8];
+} can_message;
+
+
 char can_read(int address){
 	PORTB &= ~(1<<PB4);
 	char instruction = 0b00000011;
@@ -225,47 +260,120 @@ void can_bit_modify_instruction(int address, int mask_byte, int data_byte){
 	PORTB |= (1<<PB4);
 }
 
-void can_send_message(int message_id, int8_t data){
-	// message id 0-8
-	// Load id to buffer 0
-	int MCP_TXB0SIDL = 0x32;
-	can_write(MCP_TXB0SIDL, 0b00100000); // TODO gjør at det ikke er hardcodet
-	int MCP_TXB0SIDH = 0x31;
-	can_write(MCP_TXB0SIDH, 0b00000000);
-	// load length
-	int MCP_TXB0DLC = 0x35;
-	can_write(MCP_TXB0DLC, 0b00000001);
-	// load data
-	int MCP_TXB0DM = 0x36;
-	can_write(MCP_TXB0DM, data);
+void can_send_message(can_message msg){
+	can_write(MCP_TXB0SIDL, msg.id_lower); // Load id to buffer 0
+	can_write(MCP_TXB0SIDH, msg.id_higher);
+	can_write(MCP_TXB0DLC, msg.message_length_bytes); // load length of message in bytes
 	
-	// Enable buffer
-	can_write(MCP_TXB0CTRL, 0b00001000);
-	// Request to send buffer
-	can_request_to_send(MCP_RTS_TX0);
-}
-
-int can_recieve_message(){
-	// Wait for CANINTF.RX0IF flag to be high
-	char status = can_read(MCP_TXB1CTRL);
-	char data = can_read(MCP_CANINTF);
-	//printf("%b \n\r", data);
-	while(!(data & 0b00000010)){
-		//data = can_read(MCP_CANINTF);
-		printf("data is facked  %n \n\r", data);
-		
+	for (uint8_t i = 0; i < msg.message_length_bytes; ++i){
+		can_write(MCP_TXB0D0 + i, msg.data[i]);
 	}
 	
+	can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
+	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
+}
+
+void can_send_message_old(uint8_t message_id, uint8_t* data){
+	can_write(MCP_TXB0SIDL, 0b00100000); // Load id to buffer 0
+	can_write(MCP_TXB0SIDH, 0b00000000);
+	can_write(MCP_TXB0DLC, 0b00001000); // load length of message in bytes
 	
-	int id_high = can_read(MCP_RXB1SIDH);
-	int MCP_RXB1SIDL = 0x72;
-	int id_low = can_read(MCP_RXB1SIDL);
-	int MCP_RXB1DLC = 0x75;
-	int data_lenght_buffer = can_read(MCP_RXB1DLC);
-	int MCP_RXB1D0 = 0x76;
-	int data1 = can_read(MCP_RXB1D0); 
+	can_write(MCP_TXB0D0, data[0]); 
+	can_write(MCP_TXB0D1, data[1]);
+	can_write(MCP_TXB0D2, data[2]);
+	can_write(MCP_TXB0D3, data[3]);
+	can_write(MCP_TXB0D4, data[4]);
+	can_write(MCP_TXB0D5, data[5]);
+	can_write(MCP_TXB0D6, data[6]);
+	can_write(MCP_TXB0D7, data[7]);
 	
-	return data1;
+	can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
+	
+	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
+}
+
+void can_recieve_message_new(can_message *recieved_message){
+	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
+	while(!(recieved_msg_flag & 0b00000001)){
+		recieved_msg_flag = can_read(MCP_CANINTF);
+	}
+	
+	recieved_message.id_higher = can_read(MCP_RXB0SIDH);
+	recieved_message.id_lower = can_read(MCP_RXB0SIDL);
+	recieved_message.message_length_bytes = can_read(MCP_RXB0DLC);
+		
+//	uint8_t data[8];
+	uint8_t MCP_RXB0D0 = 0x66;
+	data[0] = can_read(MCP_RXB0D0);
+	
+	uint8_t MCP_RXB0D1 = 0x67;
+	data[1] = can_read(MCP_RXB0D1);
+	
+	uint8_t MCP_RXB0D2 = 0x68;
+	data[2] = can_read(MCP_RXB0D2);
+	
+	uint8_t MCP_RXB0D3 = 0x69;
+	data[3] = can_read(MCP_RXB0D3);
+	
+	uint8_t MCP_RXB0D4 = 0x6a;
+	data[4] = can_read(MCP_RXB0D4);
+	
+	uint8_t MCP_RXB0D5 = 0x6b;
+	data[5] = can_read(MCP_RXB0D5);
+	
+	uint8_t MCP_RXB0D6 = 0x6c;
+	data[6] = can_read(MCP_RXB0D6);
+	
+	uint8_t MCP_RXB0D7 = 0x6d;
+	data[7] = can_read(MCP_RXB0D7);
+	
+	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
+}
+
+void can_recieve_message(uint8_t *data){
+	uint8_t status = can_read(MCP_TXB0CTRL);
+	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
+	while(!(recieved_msg_flag & 0b00000001)){
+		recieved_msg_flag = can_read(MCP_CANINTF);
+	}
+	
+	uint8_t id_high = can_read(MCP_RXB0SIDH);
+	uint8_t MCP_RXB0SIDL = 0x62;
+	uint8_t id_low = can_read(MCP_RXB0SIDL);
+	
+	uint8_t MCP_RXB0DLC = 0x65;
+	uint8_t data_lenght_buffer = can_read(MCP_RXB0DLC);
+	
+	printf("datalength buffer %i \n\r", data_lenght_buffer);
+	
+	printf("id %i%i ", id_high, id_low);
+	
+//	uint8_t data[8];
+	uint8_t MCP_RXB0D0 = 0x66;
+	data[0] = can_read(MCP_RXB0D0);
+	
+	uint8_t MCP_RXB0D1 = 0x67;
+	data[1] = can_read(MCP_RXB0D1);
+	
+	uint8_t MCP_RXB0D2 = 0x68;
+	data[2] = can_read(MCP_RXB0D2);
+	
+	uint8_t MCP_RXB0D3 = 0x69;
+	data[3] = can_read(MCP_RXB0D3);
+	
+	uint8_t MCP_RXB0D4 = 0x6a;
+	data[4] = can_read(MCP_RXB0D4);
+	
+	uint8_t MCP_RXB0D5 = 0x6b;
+	data[5] = can_read(MCP_RXB0D5);
+	
+	uint8_t MCP_RXB0D6 = 0x6c;
+	data[6] = can_read(MCP_RXB0D6);
+	
+	uint8_t MCP_RXB0D7 = 0x6d;
+	data[7] = can_read(MCP_RXB0D7);
+	
+	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
 }
 
 uint8_t can_init(){
@@ -273,7 +381,7 @@ uint8_t can_init(){
 	//set configuration mode
 	can_reset();
 	_delay_ms(1000);
-	char value = can_read(MCP_CANSTAT);
+	uint8_t value = can_read(MCP_CANSTAT);
 	if ((value & MODE_MASK) != MODE_CONFIG){
 		printf (" MCP2515 is NOT in configuration mode after reset !\n");
 		return 1;
@@ -282,13 +390,14 @@ uint8_t can_init(){
 	}
 	
 	can_write(MCP_CANCTRL, MODE_LOOPBACK);
-	int d = can_read(MCP_CANSTAT);
+	uint8_t d = can_read(MCP_CANSTAT);
 	printf(" CANMODE = %d \n", d);
 	
 	can_write(MCP_CNF1, 0b00000011);
 	can_write(MCP_CNF2, 0b10110001);
 	can_write(MCP_CNF3, 0b00000101);
 	can_write(MCP_CANINTE, (MCP_RX_INT | MCP_TX_INT));
+	can_write(MCP_RXB0CTRL, 0b01100000);
 	
 	return 0;
 	
