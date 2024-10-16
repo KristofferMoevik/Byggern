@@ -212,7 +212,7 @@ void can_reset(){
 
 }
 
-void can_write(char address, char data){
+void can_write(uint8_t address, uint8_t data){
 	PORTB &= ~(1<<PB4);
 	SPI_MasterTransmit(MCP_WRITE);
 	SPI_MasterTransmit(address);
@@ -269,24 +269,6 @@ void can_send_message(can_message msg){
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
 
-void can_send_message_old(uint8_t message_id, uint8_t* data){
-	can_write(MCP_TXB0SIDL, 0b00100000); // Load id to buffer 0
-	can_write(MCP_TXB0SIDH, 0b00000000);
-	can_write(MCP_TXB0DLC, 0b00001000); // load length of message in bytes
-	
-	can_write(MCP_TXB0D0, data[0]); 
-	can_write(MCP_TXB0D1, data[1]);
-	can_write(MCP_TXB0D2, data[2]);
-	can_write(MCP_TXB0D3, data[3]);
-	can_write(MCP_TXB0D4, data[4]);
-	can_write(MCP_TXB0D5, data[5]);
-	can_write(MCP_TXB0D6, data[6]);
-	can_write(MCP_TXB0D7, data[7]);
-	
-	can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
-	
-	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
-}
 
 void can_recieve_message(can_message *recieved_message){
 	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
@@ -305,45 +287,8 @@ void can_recieve_message(can_message *recieved_message){
 	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
 }
 
-void can_recieve_message_old(uint8_t *data){
-	uint8_t status = can_read(MCP_TXB0CTRL);
-	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
-	while(!(recieved_msg_flag & 0b00000001)){
-		recieved_msg_flag = can_read(MCP_CANINTF);
-	}
-	
-	uint8_t id_high = can_read(MCP_RXB0SIDH);
-	uint8_t id_low = can_read(MCP_RXB0SIDL);
-	
-	uint8_t data_lenght_buffer = can_read(MCP_RXB0DLC);
-	
-	printf("datalength buffer %i \n\r", data_lenght_buffer);
-	
-	printf("id %i%i ", id_high, id_low);
-	
-//	uint8_t data[8];
-	data[0] = can_read(MCP_RXB0D0);
-	
-	data[1] = can_read(MCP_RXB0D1);
-	
-	data[2] = can_read(MCP_RXB0D2);
-	
-	data[3] = can_read(MCP_RXB0D3);
-	
-	data[4] = can_read(MCP_RXB0D4);
-	
-	data[5] = can_read(MCP_RXB0D5);
-	
-	data[6] = can_read(MCP_RXB0D6);
-	
-	data[7] = can_read(MCP_RXB0D7);
-	
-	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
-}
-
-uint8_t can_init(){
-	SPI_MasterInit();
-	//set configuration mode
+uint8_t can_init(uint8_t mode){
+	SPI_MasterInit(); //set configuration mode
 	can_reset();
 	_delay_ms(1000);
 	uint8_t value = can_read(MCP_CANSTAT);
@@ -354,7 +299,7 @@ uint8_t can_init(){
 		printf(" MCP2515 is in config mode");
 	}
 	
-	can_write(MCP_CANCTRL, MODE_LOOPBACK);
+	can_write(MCP_CANCTRL, mode);
 	uint8_t d = can_read(MCP_CANSTAT);
 	printf(" CANMODE = %d \n", d);
 	

@@ -60,7 +60,7 @@ void test_lab_5(){
 	flush_UART();
 	stdout = &uart_out;
 	printf("test");
-	int fail = can_init();
+	int fail = can_init(MODE_LOOPBACK);
 	if (!fail){
 		printf("successfully initializes");
 	}
