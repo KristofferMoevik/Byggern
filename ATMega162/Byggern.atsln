@@ -5,16 +5,28 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ATMega162", "ATMega162\ATMega162.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ATSAM3X8E", "GccApplication2\ATSAM3X8E.cproj", "{AC3A2637-DE19-45A0-BA29-B6F776A81973}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
 		Debug|AVR = Debug|AVR
+		Release|ARM = Release|ARM
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.ActiveCfg = Debug|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.ActiveCfg = Debug|AVR
-		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.ActiveCfg = Release|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Debug|ARM.ActiveCfg = Debug|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Debug|ARM.Build.0 = Debug|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Debug|AVR.ActiveCfg = Debug|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Debug|AVR.Build.0 = Debug|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Release|ARM.ActiveCfg = Release|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Release|ARM.Build.0 = Release|ARM
+		{AC3A2637-DE19-45A0-BA29-B6F776A81973}.Release|AVR.ActiveCfg = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
