@@ -10,10 +10,14 @@
 #include "adc.h"
 #include "oled.h"
 #include "external_memory_bus.h"
+#include "mcp2515.h"
+
 
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <time.h>
+#include <stdbool.h>
+
 
 #ifndef TESTS_H_
 #define TESTS_H_
@@ -47,6 +51,63 @@ void test_lab_4(){
 		_delay_ms(1000);
 		oled_clear_screen();
 		_delay_ms(1000);
+	}
+}
+
+void test_lab_5(){
+	init_external_memory_bus();
+	init_UART();
+	flush_UART();
+	stdout = &uart_out;
+	printf("test");
+	int fail = can_init();
+	if (!fail){
+		printf("successfully initializes");
+	}
+	uint8_t i = 0;
+	while (1)
+	{
+		can_message msg_send;
+		msg_send.id_lower = 0b00100000;
+		msg_send.id_higher = 0b00000000;
+		msg_send.message_length_bytes = 8;
+		
+		msg_send.data[0] = i;
+		msg_send.data[1] = i+1;
+		msg_send.data[2] = i+2;
+		msg_send.data[3] = i+3;
+		msg_send.data[4] = i+4;
+		msg_send.data[5] = i+5;
+		msg_send.data[6] = i+6;
+		msg_send.data[7] = i+7;
+		can_send_message(msg_send);
+				
+		can_message *recieved_msg;
+		can_recieve_message(recieved_msg);
+		
+		bool messages_are_the_same = true;
+		
+		for (uint8_t ii = 0; ii < msg_send.message_length_bytes; ++ii ){
+			if (!(msg_send.data[ii] == recieved_msg->data[ii])){
+				messages_are_the_same = false;
+				break;
+			}
+		}
+		
+		if (messages_are_the_same){
+			printf("messages are the same:)");
+		} else {
+			printf("!!! messages are not the same:(((");
+		}
+		
+		_delay_ms(1000);
+		
+		i = i + 8;
+		
+		if (i > 100){
+			break;
+		}
+		
 	}
 }
 

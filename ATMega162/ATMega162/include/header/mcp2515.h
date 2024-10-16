@@ -163,12 +163,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_MERRF		0x80
 
 
-// Heimelaga
-
 #define MCP_TXB0SIDL    0x32
 #define MCP_TXB0SIDH    0x31
 #define MCP_TXB0DLC     0x35
-#define MCP_TXB0D0      0x36
 #define MCP_TXB0D0      0x36
 #define MCP_TXB0D1      0x37		    
 #define MCP_TXB0D2      0x38
@@ -189,8 +186,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB0D6      0x6c	
 #define MCP_RXB0D7      0x6d
 
-typedef struct
-{
+typedef struct {
 	uint8_t id_lower;
 	uint8_t id_higher;
 	uint8_t message_length_bytes;
@@ -268,7 +264,7 @@ void can_send_message(can_message msg){
 	for (uint8_t i = 0; i < msg.message_length_bytes; ++i){
 		can_write(MCP_TXB0D0 + i, msg.data[i]);
 	}
-	
+	printf(" \n\r");
 	can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
@@ -292,45 +288,24 @@ void can_send_message_old(uint8_t message_id, uint8_t* data){
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
 
-void can_recieve_message_new(can_message *recieved_message){
+void can_recieve_message(can_message *recieved_message){
 	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
 	while(!(recieved_msg_flag & 0b00000001)){
 		recieved_msg_flag = can_read(MCP_CANINTF);
 	}
 	
-	recieved_message.id_higher = can_read(MCP_RXB0SIDH);
-	recieved_message.id_lower = can_read(MCP_RXB0SIDL);
-	recieved_message.message_length_bytes = can_read(MCP_RXB0DLC);
-		
-//	uint8_t data[8];
-	uint8_t MCP_RXB0D0 = 0x66;
-	data[0] = can_read(MCP_RXB0D0);
+	recieved_message->id_higher = can_read(MCP_RXB0SIDH);
+	recieved_message->id_lower = can_read(MCP_RXB0SIDL);
+	recieved_message->message_length_bytes = can_read(MCP_RXB0DLC);
 	
-	uint8_t MCP_RXB0D1 = 0x67;
-	data[1] = can_read(MCP_RXB0D1);
-	
-	uint8_t MCP_RXB0D2 = 0x68;
-	data[2] = can_read(MCP_RXB0D2);
-	
-	uint8_t MCP_RXB0D3 = 0x69;
-	data[3] = can_read(MCP_RXB0D3);
-	
-	uint8_t MCP_RXB0D4 = 0x6a;
-	data[4] = can_read(MCP_RXB0D4);
-	
-	uint8_t MCP_RXB0D5 = 0x6b;
-	data[5] = can_read(MCP_RXB0D5);
-	
-	uint8_t MCP_RXB0D6 = 0x6c;
-	data[6] = can_read(MCP_RXB0D6);
-	
-	uint8_t MCP_RXB0D7 = 0x6d;
-	data[7] = can_read(MCP_RXB0D7);
+	for (uint8_t i = 0; i < recieved_message->message_length_bytes; ++i){
+		recieved_message->data[i] = can_read(MCP_RXB0D0 + i);
+	}
 	
 	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
 }
 
-void can_recieve_message(uint8_t *data){
+void can_recieve_message_old(uint8_t *data){
 	uint8_t status = can_read(MCP_TXB0CTRL);
 	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
 	while(!(recieved_msg_flag & 0b00000001)){
@@ -338,10 +313,8 @@ void can_recieve_message(uint8_t *data){
 	}
 	
 	uint8_t id_high = can_read(MCP_RXB0SIDH);
-	uint8_t MCP_RXB0SIDL = 0x62;
 	uint8_t id_low = can_read(MCP_RXB0SIDL);
 	
-	uint8_t MCP_RXB0DLC = 0x65;
 	uint8_t data_lenght_buffer = can_read(MCP_RXB0DLC);
 	
 	printf("datalength buffer %i \n\r", data_lenght_buffer);
@@ -349,28 +322,20 @@ void can_recieve_message(uint8_t *data){
 	printf("id %i%i ", id_high, id_low);
 	
 //	uint8_t data[8];
-	uint8_t MCP_RXB0D0 = 0x66;
 	data[0] = can_read(MCP_RXB0D0);
 	
-	uint8_t MCP_RXB0D1 = 0x67;
 	data[1] = can_read(MCP_RXB0D1);
 	
-	uint8_t MCP_RXB0D2 = 0x68;
 	data[2] = can_read(MCP_RXB0D2);
 	
-	uint8_t MCP_RXB0D3 = 0x69;
 	data[3] = can_read(MCP_RXB0D3);
 	
-	uint8_t MCP_RXB0D4 = 0x6a;
 	data[4] = can_read(MCP_RXB0D4);
 	
-	uint8_t MCP_RXB0D5 = 0x6b;
 	data[5] = can_read(MCP_RXB0D5);
 	
-	uint8_t MCP_RXB0D6 = 0x6c;
 	data[6] = can_read(MCP_RXB0D6);
 	
-	uint8_t MCP_RXB0D7 = 0x6d;
 	data[7] = can_read(MCP_RXB0D7);
 	
 	can_bit_modify_instruction(MCP_CANINTF, MCP_RX0IF, 0x00);
