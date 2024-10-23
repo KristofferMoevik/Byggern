@@ -10,6 +10,7 @@
 #include <sam.h>
 #include "include/header/time.h"
 #include "include/header/can.h"
+#include "include/header/delay.h"
 
 
 void test_servi_pin(){
@@ -36,12 +37,30 @@ int main(void)
     SystemInit();
 	
 	uart_init(84000000, 9600);
-	can_init((CanInit){.brp = 3, .phase1 = 5, .phase2 = 1, .propag = 6}, 0);
+	WDT -> WDT_MR = WDT_MR_WDDIS;
+	can_init((CanInit){.brp = 41, .phase1 = 6, .phase2 = 5, .propag = 0, .smp = 0}, 0);
+	
+		
+		
+		// SJW = 1 
+		// BRP 20 
+		// PRSEG 2 
+		// PS1 7 
+		// PS2 6 
+	CanMsg msg_recieve; 
+	
 	while(1){
-		CanMsg m;
-		uint8_t can_rx(CanMsg* m);
-		can_printmsg(m);
-		printf("\n\r");
+		printf("%i", can_rx(&msg_recieve));
+		//for (uint8_t ii = 0; ii < msg_recieve.length; ++ii ){
+		//	printf(" %i", msg_recieve.dword[ii]);
+		//}
+		printf(" %i \n\r", msg_recieve.id);
+		printf(" %i \n\r", msg_recieve.length);
+		printf(" %i \n\r", msg_recieve.dword[0]);
+		printf(" %i \n\r", msg_recieve.dword[1]);
+	
+		
+		_delay_ms(1000);
 	}
 	
 }

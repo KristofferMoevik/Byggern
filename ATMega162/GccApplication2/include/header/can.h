@@ -86,7 +86,7 @@ struct CanMsg {
 	uint8_t length;
 	union {
 		uint8_t     byte[8];
-		uint32_t    dword[2];
+		uint8_t    dword[8];
 		Byte8       byte8;
 	};
 };

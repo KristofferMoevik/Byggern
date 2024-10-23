@@ -270,7 +270,7 @@ void can_send_message(can_message msg){
 		can_write(MCP_TXB0D0 + i, msg.data[i]);
 	}
 	printf(" \n\r");
-	//can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
+	can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
 
@@ -304,25 +304,25 @@ uint8_t can_init(uint8_t mode){
 		printf(" MCP2515 is in config mode");
 	}
 	
-	// must be in config mode for this to work !!! 
-	can_write(MCP_CNF1, 0b11000011); // SJW =4 Tq & BRP = 3 	
-	can_write(MCP_CNF2, 0b10110000); // BLTMODE = 1, SAM = 0, PS1 = 6, PropPag = 0
-	can_write(MCP_CNF3, 0b00000101); // PS2 = 5
-	
+		
 	
 	can_write(MCP_CANCTRL, mode);
 	uint8_t d = can_read(MCP_CANSTAT);
 	printf(" CANMODE = %d \n", d);
 	
+	can_write(MCP_CNF1, 0b00000011);	
+	can_write(MCP_CNF2, 0b10111010);
+	can_write(MCP_CNF3, 0b00000110);
+
 	
 	
 	can_write(MCP_CANINTE, (MCP_RX_INT | MCP_TX_INT));
 	can_write(MCP_RXB0CTRL, 0b01100000);
 	
 	//time setup 
-
 	
-
+	
+	
 	
 	return 0;
 	

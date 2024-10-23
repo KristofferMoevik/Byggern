@@ -18,8 +18,10 @@
 #include <time.h>
 
 
+
 int main(void)
-{
+{	
+	
 	init_external_memory_bus();
 	init_UART();
 	flush_UART();
@@ -29,14 +31,24 @@ int main(void)
 	if (!fail){
 		printf("successfully initializes");
 	}
-	init_UART();
-
-	while(1){
-		can_message msg_send;
-		msg_send.id_lower = 0b00100000;
-		msg_send.id_higher = 0b00000000;
-		msg_send.message_length_bytes = 8;
-		uint8_t i = 0;
+	
+	char cnf1 = can_read(MCP_CNF1);
+	char cnf2 = can_read(MCP_CNF2);
+	char cnf3 = can_read(MCP_CNF3);
+	
+	printf("cnf1: %d", cnf1);
+	printf("cnf2: %d", cnf2);
+	printf("cnf3: %d", cnf3);
+	
+	
+	can_message msg_send;
+	msg_send.id_lower =  0b00100000;
+	msg_send.id_higher = 0b00000000;
+	msg_send.message_length_bytes = 8;
+	uint8_t i = 0;
+	
+	while(1) {
+		
 		msg_send.data[0] = i;
 		msg_send.data[1] = i+1;
 		msg_send.data[2] = i+2;
@@ -50,9 +62,22 @@ int main(void)
 		for (uint8_t ii = 0; ii < msg_send.message_length_bytes; ++ii ){
 			printf(" %i", msg_send.data[ii]);
 		}
-		printf(" \n\r");
+		i++; 
+		printf(" %i \n\r", msg_send.id_lower); 
+		//printf(" %i \n\r", msg_send.id_higher);
+		printf(" %i \n\r", msg_send.message_length_bytes);
+		printf(" %i \n\r", msg_send.data[0]);   
 		_delay_ms(1000);
+		char tx0 = can_read(MCP_CANINTF);
+		
+		printf("%i ", tx0);
+	
 	}
+	
+	
+	can_message msg_recieve; 
+	can_recieve_message(&msg_recieve);
+
 	
 }
 
