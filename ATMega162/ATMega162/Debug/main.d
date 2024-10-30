@@ -27,7 +27,7 @@ main.d main.o: .././main.c ../include/header/uart.h \
  ../include/header/spi.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\time.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
- ../include/header/mcp2515.h
+ ../include/header/mcp2515.h ../include/header/joystick.h
 
 ../include/header/uart.h:
 
@@ -96,3 +96,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
 
 ../include/header/mcp2515.h:
+
+../include/header/joystick.h:

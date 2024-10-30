@@ -169,6 +169,9 @@
     <Compile Include="include\header\can.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\servo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\time.h">
       <SubType>compile</SubType>
     </Compile>

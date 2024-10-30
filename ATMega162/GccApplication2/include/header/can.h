@@ -9,7 +9,6 @@
 #ifndef CAN_H_
 #define CAN_H_
 
-
 #pragma once
 
 #include <stdint.h>
@@ -24,7 +23,7 @@ __attribute__((packed)) struct CanInit {
 			uint32_t propag:4;  // Propagation time segment
 			uint32_t phase1:4;  // Phase 1 segment
 			uint32_t sjw:4;     // Synchronization jump width
-			uint32_t brp:3;     // Baud rate prescaler
+			uint32_t brp:8;     // Baud rate prescaler
 			uint32_t smp:8;     // Sampling mode
 		};
 		uint32_t reg;
@@ -86,7 +85,7 @@ struct CanMsg {
 	uint8_t length;
 	union {
 		uint8_t     byte[8];
-		uint8_t    dword[8];
+		uint32_t    dword[2];
 		Byte8       byte8;
 	};
 };
@@ -102,6 +101,7 @@ uint8_t can_rx(CanMsg* m);
 
 // Print a CAN message (using `printf`)
 void can_printmsg(CanMsg m);
+
 
 
 

@@ -5,7 +5,6 @@
  *  Author: eveneha
  */ 
 
-
 #include "sam.h"
 #include "../header/can.h"
 #include <stdio.h>

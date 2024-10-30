@@ -262,15 +262,16 @@ void can_bit_modify_instruction(int address, int mask_byte, int data_byte){
 }
 
 void can_send_message(can_message msg){
+	//can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
+
 	can_write(MCP_TXB0SIDL, msg.id_lower); // Load id to buffer 0
 	can_write(MCP_TXB0SIDH, msg.id_higher);
 	can_write(MCP_TXB0DLC, msg.message_length_bytes); // load length of message in bytes
 	
-	for (uint8_t i = 0; i < msg.message_length_bytes; ++i){
+	for (uint8_t i = 0; i < msg.message_length_bytes; i++){
 		can_write(MCP_TXB0D0 + i, msg.data[i]);
 	}
 	printf(" \n\r");
-	//can_write(MCP_TXB0CTRL, 0b00001000); // Request message to be transmitted
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
 
@@ -304,9 +305,9 @@ uint8_t can_init(uint8_t mode){
 		printf(" MCP2515 is in config mode");
 	}
 	
-	// must be in config mode for this to work !!! 
+	// must be in config mode for this to work !!! TQ=
 	can_write(MCP_CNF1, 0b11000011); // SJW =4 Tq & BRP = 3 	
-	can_write(MCP_CNF2, 0b10110000); // BLTMODE = 1, SAM = 0, PS1 = 6, PropPag = 0
+	can_write(MCP_CNF2, 0b10110001); // BLTMODE = 1, SAM = 0, PS1 = 6, PropPag = 1
 	can_write(MCP_CNF3, 0b00000101); // PS2 = 5
 	
 	
@@ -318,15 +319,7 @@ uint8_t can_init(uint8_t mode){
 	
 	can_write(MCP_CANINTE, (MCP_RX_INT | MCP_TX_INT));
 	can_write(MCP_RXB0CTRL, 0b01100000);
-	
-	//time setup 
-
-	
-
-	
 	return 0;
-	
-
 }
 
 

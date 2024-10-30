@@ -11,6 +11,7 @@
 #include "oled.h"
 #include "tests.h"
 #include "mcp2515.h"
+#include "joystick.h"
 
 #include <stdbool.h>
 #include <avr/io.h>
@@ -25,6 +26,7 @@ int main(void)
 	init_external_memory_bus();
 	init_UART();
 	flush_UART();
+	init_clock_adc();
 	stdout = &uart_out;
 	printf("test");
 	int fail = can_init(MODE_NORMAL);
@@ -42,10 +44,43 @@ int main(void)
 	
 	
 	can_message msg_send;
-	msg_send.id_lower =  0b00100000;
+	msg_send.id_lower =  0b10000000;
+	msg_send.id_higher = 0b00000000;
+	msg_send.message_length_bytes = 8;
+	msg_send.data[0] = 0;
+	msg_send.data[1] = 2;
+	msg_send.data[2] = 2;
+	msg_send.data[3] = 3;
+	msg_send.data[4] = 4;
+	msg_send.data[5] = 5;
+	msg_send.data[6] = 6;
+	msg_send.data[7] = 7;
+	
+	
+	calibrate_joystick();
+	while(1){
+		send_joystick_can();
+		_delay_ms(10);
+	}
+	
+	/*
+	can_message msg_send;
+	msg_send.id_lower =  0b10000000;
 	msg_send.id_higher = 0b00000000;
 	msg_send.message_length_bytes = 8;
 	uint8_t i = 0;
+	msg_send.data[0] = 0;
+	msg_send.data[1] = 2;
+	msg_send.data[2] = 2;
+	msg_send.data[3] = 3;
+	msg_send.data[4] = 4;
+	msg_send.data[5] = 5;
+	msg_send.data[6] = 6;
+	msg_send.data[7] = 7;
+	
+	can_send_message(msg_send);
+	printf("%i, hei hei hei ", msg_send.message_length_bytes);
+	
 	
 	while(1) {
 		
@@ -63,21 +98,25 @@ int main(void)
 			printf(" %i", msg_send.data[ii]);
 		}
 		i++; 
-		printf(" %i \n\r", msg_send.id_lower); 
+		printf("\n ID: %i \n\r", msg_send.id_lower); 
 		//printf(" %i \n\r", msg_send.id_higher);
-		printf(" %i \n\r", msg_send.message_length_bytes);
-		printf(" %i \n\r", msg_send.data[0]);   
-		_delay_ms(1000);
-		char tx0 = can_read(MCP_CANINTF);
+		printf("Length: %i \n\r", msg_send.message_length_bytes);
+		printf("Data[0]: %i \n\r", msg_send.data[0]);  
 		
-		printf("%i ", tx0);
+		
+		_delay_ms(1000);
+		char tx0 = can_read(MCP_TXB0CTRL);
+		printf("%i hallo i luka! ", tx0); 
+		
+		tx0 = can_read(MCP_CANINTF);
+		
+		printf("%i hallo ", tx0);
 	
 	}
-	
-	
-	can_message msg_recieve; 
+	can_message msg_recieve;
 	can_recieve_message(&msg_recieve);
-
+	*/
+	
 	
 }
 
