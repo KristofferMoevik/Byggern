@@ -10,24 +10,29 @@
 #define SERVO_H_
 
 void init_servo(){
-	PIOB->PIO_PER |= (1 << 13); // enable IO
-	PIOB->PIO_OER |= (1 << 13); // set as output
-	PIOB->PIO_PUDR |= (1 << 13); // disable internal pull-up
-	PIOB->PIO_OWER |= (1 << 13); // enable output write
+	// PIOB->PIO_PER |= PIO_PB13; // enable IO
+	PIOB->PIO_OER |= PIO_PB13; // set as output
+	PIOB->PIO_PDR |= PIO_PB13;
+	// Assign peripheral function B to pin PB13 with is PWM
+	PIOB->PIO_ABSR |= PIO_ABSR_P13;
 	
-	PMC->PMC_PCER0 |= PMC_PCER0_PID13;
-	PMC->PMC_SCER = PMC_SCER_PCK0 | PMC_SCER_PCK1 | PMC_SCER_PCK2;
-	PWM->PWM_WPCR &= ~PIO_WPMR_WPEN;
+	PMC->PMC_PCER1 |= (1 << 4);
 	
-	REG_PWM_CMR5 = PWM_CMR_CPRE_MCK_DIV_1024 | PWM_CMR_CPOL; 
 	
-	// min = 74 
-	// max = 172 valus
-	REG_PWM_CPRD5 = 1640;			//CPRD = 20ms * 84MHz/1024
-	REG_PWM_CDTY5 = 123;			//CPRY = 1.5ms * 84MHz/1024 
+	//PMC->PMC_SCER = PMC_SCER_PCK0 | PMC_SCER_PCK1 | PMC_SCER_PCK2;
+	PWM->PWM_WPCR &= ~PWM_WPSR_WPHWS2;
+	PWM->PWM_WPCR &= ~PWM_WPSR_WPSWS2;	
+	PWM->PWM_CH_NUM[1].PWM_CMR = PWM_CMR_CPRE_MCK_DIV_1024 | PWM_CMR_CPOL | PWM_CMR_CALG;
+	float wanted_period = 0.02;
+	int default_MCK = 84000000;
+	int X = 1024;
+	int CPRD = (wanted_period * default_MCK) / (2 * X);
 	
-	REG_PWM_ENA = PWM_ENA_CHID5;
-	
+	PWM->PWM_CH_NUM[1].PWM_CPRD = CPRD; // Side 1048 ;
+	int min_duty = (0.9/20) * CPRD;
+	int max_duty = (2.1/20) * CPRD;
+	PWM->PWM_CH_NUM[1].PWM_CDTY = min_duty;
+	PWM->PWM_ENA |= PWM_ENA_CHID1;
 	
 }
 
@@ -49,17 +54,14 @@ void test_servo_pin(){
 
 // position setpoint range -100 to 100
 void set_servo(uint64_t position_setpoint){
-	uint64_t min_pulse = 74;
-	uint64_t max_pulse = 172;
-	uint64_t pwm_period = msecs(20);
-	
-	uint64_t zero = ((max_pulse - min_pulse) / 2) + min_pulse;
-	uint64_t gain = (max_pulse - zero) / 100;
-	
-	uint64_t pulse_width = position_setpoint * gain +zero; 
-	
-	REG_PWM_CDTY5 = 90;
-	
+	int min_duty = (0.9/20) * 840000;
+	int max_duty = (2.1/20) * 840000;
+	if ((position_setpoint <= max_duty) && (position_setpoint >= min_duty)){
+		printf("tried to set duty cycle to %i", position_setpoint);
+		PWM->PWM_CH_NUM[1].PWM_CDTY = position_setpoint;
+	} else {
+		printf("cannot set pwm duty cycle to %i", position_setpoint);
+	}
 }
 
 
