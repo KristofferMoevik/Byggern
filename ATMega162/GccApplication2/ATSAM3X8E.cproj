@@ -166,10 +166,25 @@
     <Compile Include="Device_Startup\system_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\can.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\check_score.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\joystick.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\servo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\solenoid.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\tests.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="include\header\time.h">

@@ -34,6 +34,16 @@ void init_servo(){
 	PWM->PWM_CH_NUM[1].PWM_CDTY = min_duty;
 	PWM->PWM_ENA |= PWM_ENA_CHID1;
 	
+	// Set phase/dir pin high
+	PIOB->PIO_PER |= PIO_PB12; // enable IO
+	PIOB->PIO_OER |= PIO_PB12; // set as output
+	PIOB->PIO_PUDR |= PIO_PB12; // disable internal pull-up
+	PIOB->PIO_OWER |= PIO_PB12; // enable output write
+	PIOB->PIO_ODSR |= PIO_PB12; // make pin HIGH
+
+	// PIO_PSR
+	// PIO_SODR
+	
 }
 
 void test_servo_pin(){
@@ -53,14 +63,27 @@ void test_servo_pin(){
 }
 
 // position setpoint range -100 to 100
-void set_servo(uint64_t position_setpoint){
-	int min_duty = (0.9/20) * 840000;
-	int max_duty = (2.1/20) * 840000;
-	if ((position_setpoint <= max_duty) && (position_setpoint >= min_duty)){
-		printf("tried to set duty cycle to %i", position_setpoint);
-		PWM->PWM_CH_NUM[1].PWM_CDTY = position_setpoint;
+void set_servo(int position_setpoint){
+	float wanted_period = 0.02;
+	int default_MCK = 84000000;
+	int X = 1024;
+	int CPRD = (wanted_period * default_MCK) / (2 * X);
+	int min_duty = (0.9/20) * CPRD;
+	int max_duty = (2.1/20) * CPRD;
+	
+	int mapped_setpoint = ( ( ( (1.2/200)*(position_setpoint - 100) ) + 2.1 ) / 20 ) * CPRD;
+	
+	if ((mapped_setpoint <= max_duty) && (mapped_setpoint >= min_duty)){
+		PWM->PWM_CH_NUM[1].PWM_CDTY = mapped_setpoint;
 	} else {
-		printf("cannot set pwm duty cycle to %i", position_setpoint);
+		if (mapped_setpoint >= max_duty)
+		{
+			PWM->PWM_CH_NUM[1].PWM_CDTY = max_duty;
+		}
+		if (mapped_setpoint <= min_duty)
+		{
+			PWM->PWM_CH_NUM[1].PWM_CDTY = min_duty;
+		}
 	}
 }
 
