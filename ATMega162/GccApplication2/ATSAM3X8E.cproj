@@ -178,6 +178,9 @@
     <Compile Include="include\header\joystick.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\motor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\servo.h">
       <SubType>compile</SubType>
     </Compile>

@@ -28,9 +28,6 @@ int test_pin(){
 		PIOB->PIO_ODSR &= ~PIO_PB25;
 		_delay_ms(100);
 	}
-	
-		
-	
 }
 
 

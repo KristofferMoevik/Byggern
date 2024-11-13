@@ -67,5 +67,38 @@ int test_servo_pwm(){
 	}
 }
 
+int test_stuff(){
+	// test_can();
+	
+	SystemInit();
+	uart_init(84000000, 9600);
+	printf("jhsfdhsfd \n\r");
+	WDT -> WDT_MR = WDT_MR_WDDIS;
+	can_init((CanInit){ .brp = 41, .phase1 = 6, .phase2 = 5, .propag = 1, .smp = 0, .sjw = 4 }, 0);
+	init_servo();
+	init_adc();
+	init_solenoid();
+	test_pin();
+	printf("starting init joystick \n\r");
+	while(!init_joystick()){};
+	zero_score();
+	int x = 0;
+	printf("testing encoder \n\r");
+	
+	test_encoder();
+	while(1){
+		int joy = read_joystick();
+		if (joy < -100) {
+			x = x;
+			} else {
+			x = joy;
+		}
+		set_servo(x);
+		int score = poll_score();
+		printf("score: %i , x: %i \n\r", score, x);
+		_delay_ms(10);
+	}
+	
+}
 
 #endif /* TESTS_H_ */
