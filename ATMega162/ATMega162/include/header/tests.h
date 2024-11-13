@@ -44,14 +44,92 @@ void test_lab_4(){
 	oled_init();
 	oled_clear_screen();
 	while(1){
-		oled_print_string("pikk", 1);
+		oled_print_string("pikk", 1,0);
 		_delay_ms(1000);
 		oled_clear_screen();
-		oled_print_string("pung", 0);
+		oled_print_string("pung", 0,0);
 		_delay_ms(1000);
 		oled_clear_screen();
 		_delay_ms(1000);
 	}
+}
+
+void test_oled() {
+	init_external_memory_bus();
+	oled_init();
+	oled_show_main_menu();
+	oled_clear_line(2); 
+	oled_print_string("> New Game", 2,1);
+}
+/*
+typedef struct  {
+	int durations[4];
+	int selected_index;
+} GameDurationSettings;
+
+
+
+#define NUM_USERS 5
+const char *user_names[NUM_USERS] = {"Jo Arve", "Studass", "Kristoffer", "Alf", "Even"}; 
+*/
+
+typedef enum {
+    STATE_NEW_GAME,
+    STATE_INSTRUCTIONS,
+    STATE_SCOREBOARD,
+    STATE_SET_DURATION
+} State;
+
+
+void fsm_main(State *currenState) {
+	init_external_memory_bus();
+	init_UART();
+	flush_UART();
+	stdout = &uart_out;
+	
+
+
+	init_external_memory_bus();
+	oled_init();
+	oled_show_main_menu(); 
+	
+	
+	init_clock_adc();
+	
+	adc_channels readings;
+	
+	
+	
+	while(1) {
+		readings = read_channels();
+		
+		switch(*currenState) {
+			case STATE_NEW_GAME:
+				oled_show_main_menu(); 
+				oled_print_string("> New Game", 2,0); 
+				
+				
+				break;
+			case STATE_INSTRUCTIONS:
+				break; 
+			case STATE_SCOREBOARD: 
+				break; 
+			case STATE_SET_DURATION: 
+				break;   
+		}
+		
+		
+		printf("joystick up down: %i /n/r", readings.joystick_up_down); 
+		
+		_delay_ms(500);  
+	}
+	
+	
+	
+	
+	
+	
+	
 }
 
 void test_lab_5(){
@@ -162,5 +240,8 @@ void adc_test(){
 	}
 	printf("finished testing");
 }
+
+
+
 
 #endif /* TESTS_H_ */

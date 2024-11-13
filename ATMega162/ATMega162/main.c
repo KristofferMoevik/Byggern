@@ -27,8 +27,10 @@ int main(void){
 	init_UART();
 	flush_UART();
 	init_clock_adc();
+	//fsm_main();
+	test_oled(); 
 	stdout = &uart_out;
-	printf("test \n\r");
+	/* printf("test \n\r");
 	int fail = can_init(MODE_NORMAL);
 	if (!fail){
 		printf("successfully initializes \n\r");
@@ -40,6 +42,6 @@ int main(void){
 		send_commands_to_node_2_can();
 		can_recieve_message(recieved_message);
 		//can_print_msg(*recieved_message);
-	}
+	}*/
 }
 

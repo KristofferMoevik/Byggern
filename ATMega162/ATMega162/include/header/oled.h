@@ -26,9 +26,11 @@
 
 void oled_init();
 void oled_clear_screen();
+void oled_clear_line(int line);
 void oled_goto_pos(int line, int col);
 void send_char(char c);
 void oled_write_char_to_pos(char c, int page, int col);
-void oled_print_string(char str[], int line);
+void oled_print_string(char str[], int line, int pos);
+void oled_show_main_menu(); 
 
 #endif /* OLED_H_ */

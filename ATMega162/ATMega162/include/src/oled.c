@@ -66,6 +66,15 @@ void oled_clear_screen(){
 	}
 }
 
+void oled_clear_line(int line){
+	oled_goto_pos(line,0);
+	int coloums = 128;	
+	for (int ii = 0; ii < coloums; ii++){
+		send_data(0x0);	
+	}
+	
+}
+
 void oled_goto_pos(int page_start, int segment){
 	send_command(page_start	| 0xB0); // Set page
 	send_command(segment & 0x0F);
@@ -80,11 +89,27 @@ void send_char(char c){
 	
 }
 
-void oled_print_string(char str[], int line){
-	oled_goto_pos(line,0);
+void oled_print_string(char str[], int line, int pos){
+	oled_goto_pos(line, pos);
 	for (int i = 0; i < strlen(str); i++){
 		send_char(str[i]);
 	}
 }
+
+void oled_show_main_menu() {
+	oled_clear_screen();
+	const char *menu_items[] = {"New Game", "Instructions", "Scoreboard", "Set Duration"};
+    int num_items = sizeof(menu_items) / sizeof(menu_items[0]);
+
+	//oled_goto_pos(1,20);
+	oled_print_string("Main Menu", 1, 35);
+
+    for (int i = 2; i < num_items+2; i++) {
+        oled_goto_pos(i, 0); // One item per page
+		//oled_print_string(" ",i); 
+		oled_print_string(menu_items[i-2],i,0);
+    }
+}
+
 
 
