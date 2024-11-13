@@ -34,7 +34,7 @@ void test_lab_3(){
 	while(1){
 		adc_channels readings = read_channels();
 		printf("value ch1");
-		printf("The value of myNumber is: %d %d %d %d\n\r ", readings.joystick_left_right, readings.joystick_up_down, readings.slider_left, readings.slider_right);
+		printf("The value of myNumber is: %d %d %d %d\n\r ", readings.joystick_left_right, readings.joystick_up_down, readings.shoot_button, readings.slider_right);
 		_delay_ms(10);
 	}
 }

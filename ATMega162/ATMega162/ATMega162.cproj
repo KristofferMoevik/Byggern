@@ -154,6 +154,9 @@
     <Compile Include="include\header\mcp2515.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\node_communication.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\oled.h">
       <SubType>compile</SubType>
     </Compile>

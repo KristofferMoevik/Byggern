@@ -85,7 +85,11 @@ main.d main.o: .././main.c \
  .././include/header/delay.h .././include/header/servo.h \
  .././include/header/joystick.h .././include/header/adc.h \
  .././include/header/check_score.h .././include/header/adc.h \
- .././include/header/solenoid.h .././include/header/motor.h
+ .././include/header/solenoid.h .././include/header/motor.h \
+ .././include/header/node_communication.h \
+ .././include/header/position_regulator.h .././include/header/tests.h \
+ .././include/header/delay.h .././include/header/servo.h \
+ .././include/header/joystick.h .././include/header/check_score.h
 
 C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\SAM3X_DFP\1.0.50\include/sam.h:
 
@@ -270,3 +274,17 @@ C:\Program\ Files\ (x86)\Atmel\Studio\7.0\Packs\atmel\SAM3X_DFP\1.0.50\include/p
 .././include/header/solenoid.h:
 
 .././include/header/motor.h:
+
+.././include/header/node_communication.h:
+
+.././include/header/position_regulator.h:
+
+.././include/header/tests.h:
+
+.././include/header/delay.h:
+
+.././include/header/servo.h:
+
+.././include/header/joystick.h:
+
+.././include/header/check_score.h:

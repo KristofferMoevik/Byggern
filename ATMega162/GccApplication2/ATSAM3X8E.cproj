@@ -181,6 +181,12 @@
     <Compile Include="include\header\motor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\node_communication.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\header\position_regulator.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\servo.h">
       <SubType>compile</SubType>
     </Compile>

@@ -24,7 +24,7 @@ adc_channels read_channels(){
 	ext_adc[0] = 0;
 	adc_readings.joystick_up_down = ext_adc[0];
 	adc_readings.joystick_left_right = ext_adc[0];
-	adc_readings.slider_left = ext_adc[0];
+	adc_readings.shoot_button = ext_adc[0];
 	adc_readings.slider_right = ext_adc[0];
 	return adc_readings;
 }

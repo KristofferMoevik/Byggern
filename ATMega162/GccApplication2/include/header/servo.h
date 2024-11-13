@@ -34,12 +34,7 @@ void init_servo(){
 	PWM->PWM_CH_NUM[1].PWM_CDTY = min_duty;
 	PWM->PWM_ENA |= PWM_ENA_CHID1;
 	
-	// Set phase/dir pin high
-	PIOB->PIO_PER |= PIO_PB12; // enable IO
-	PIOB->PIO_OER |= PIO_PB12; // set as output
-	PIOB->PIO_PUDR |= PIO_PB12; // disable internal pull-up
-	PIOB->PIO_OWER |= PIO_PB12; // enable output write
-	PIOB->PIO_ODSR |= PIO_PB12; // make pin HIGH
+	
 
 	// PIO_PSR
 	// PIO_SODR

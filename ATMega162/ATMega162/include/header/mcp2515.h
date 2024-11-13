@@ -198,6 +198,14 @@ typedef struct {
 	uint8_t data[8];
 } can_message;
 
+void can_print_msg(can_message m){
+	printf("id_l: %i, ", m.id_lower);
+	printf("message_legth_bytes: %i, ", m.message_length_bytes);
+	for (int i = 0; i < m.message_length_bytes; ++i){
+		printf("data[%i]: %i , ", i, m.data[i]);
+	}
+	printf("\n\r");
+}
 
 char can_read(int address){
 	PORTB &= ~(1<<PB4);
@@ -271,16 +279,17 @@ void can_send_message(can_message msg){
 	for (uint8_t i = 0; i < msg.message_length_bytes; i++){
 		can_write(MCP_TXB0D0 + i, msg.data[i]);
 	}
-	printf(" \n\r");
+	
 	can_request_to_send(MCP_RTS_TX0); // Request to send buffer from buffer 0
 }
 
 
-void can_recieve_message(can_message *recieved_message){
+int can_recieve_message(can_message *recieved_message){
 	uint8_t recieved_msg_flag = can_read(MCP_CANINTF); // Wait for CANINTF.RX0IF flag to be high
-	while(!(recieved_msg_flag & 0b00000001)){
-		recieved_msg_flag = can_read(MCP_CANINTF);
+	if (!(recieved_msg_flag & 0b00000001)){
+		return 0;
 	}
+	while(!(recieved_msg_flag & 0b00000001)){recieved_msg_flag = can_read(MCP_CANINTF);}
 	
 	recieved_message->id_higher = can_read(MCP_RXB0SIDH);
 	recieved_message->id_lower = can_read(MCP_RXB0SIDL);

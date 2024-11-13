@@ -20,7 +20,7 @@ typedef struct
 {
 	int joystick_up_down;
 	int joystick_left_right;
-	int slider_left;
+	int shoot_button;
 	int slider_right;
 } adc_channels;
 

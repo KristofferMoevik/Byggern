@@ -17,6 +17,9 @@
 #include "include/header/check_score.h"
 #include "include/header/solenoid.h"
 #include "include/header/motor.h"
+#include "include/header/node_communication.h"
+#include "include/header/position_regulator.h"
+#include "include/header/tests.h"
 
 
 int main(void)
@@ -25,11 +28,29 @@ int main(void)
 	uart_init(84000000, 9600);
 	printf("jhsfdhsfd \n\r");
 	WDT -> WDT_MR = WDT_MR_WDDIS;
-	can_init((CanInit){ .brp = 41, .phase1 = 6, .phase2 = 5, .propag = 1, .smp = 0, .sjw = 4 }, 0);
-	init_servo();
-	init_adc();
-	init_solenoid();
+	//can_init((CanInit){ .brp = 41, .phase1 = 6, .phase2 = 5, .propag = 1, .smp = 0, .sjw = 4 }, 0);
+	//init_servo();
+	//init_adc();
+	//init_solenoid();
+	init_motor();
+	//init_position_regulator();
+	//init_encoder();
+	//test_servo_pwm();
+	test_motor();
+	//test_solenoid();
 	
-	test_encoder();
+	while (1)
+	{
+		score = poll_score();
+		printf("score: %i , ", score);
+		send_score_to_node1(score);
+		commands recieved_commands = get_commands_from_node_1();
+		float position_setpoint = recieved_commands.slider_right;
+		float position = read_encoder_position();
+		int output = position_regulator(position_setpoint, position);
+		printf("output: %f ", output);
+		set_motor_speed(output);
+		
+	}
 }
 
