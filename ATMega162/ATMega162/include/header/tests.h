@@ -81,13 +81,13 @@ typedef enum {
 } State;
 
 
-void fsm_main(State *currenState) {
+void fsm_main() {
 	init_external_memory_bus();
 	init_UART();
 	flush_UART();
 	stdout = &uart_out;
 	
-
+	State currenState = STATE_NEW_GAME;  
 
 	init_external_memory_bus();
 	oled_init();
@@ -103,18 +103,37 @@ void fsm_main(State *currenState) {
 	while(1) {
 		readings = read_channels();
 		
-		switch(*currenState) {
+		
+		
+		
+		switch(currenState) {
 			case STATE_NEW_GAME:
-				oled_show_main_menu(); 
-				oled_print_string("> New Game", 2,0); 
+				oled_show_main_menu();
+				oled_clear_line(2); 
+				oled_print_string("> New Game", 2,1); 
 				
+				if (readings.joystick_up_down > 230) {
+					nextState = STATE_INSTRUCTIONS; 
+				} else if (readings.joystick_up_down < 50) {
+					nexttState = STATE_SET_DURATION; 
+				} 
+					  
 				
 				break;
 			case STATE_INSTRUCTIONS:
+				oled_show_main_menu();
+				oled_clear_line(3); 
+				oled_print_string("> Instructions", 2,1); 				
 				break; 
 			case STATE_SCOREBOARD: 
-				break; 
+				oled_show_main_menu();
+				oled_clear_line(4); 
+				oled_print_string("> Scoreboard", 2,1); 
+				break;
 			case STATE_SET_DURATION: 
+				oled_show_main_menu();
+				oled_clear_line(5); 
+				oled_print_string("> Set Durations", 2,1); 
 				break;   
 		}
 		
@@ -122,6 +141,7 @@ void fsm_main(State *currenState) {
 		printf("joystick up down: %i /n/r", readings.joystick_up_down); 
 		
 		_delay_ms(500);  
+		currentState = nextState; 
 	}
 	
 	
