@@ -148,6 +148,9 @@
     <Compile Include="include\header\fonts.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="include\header\fsm.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="include\header\joystick.h">
       <SubType>compile</SubType>
     </Compile>

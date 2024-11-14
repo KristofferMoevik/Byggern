@@ -28,15 +28,15 @@ int main(void)
 	uart_init(84000000, 9600);
 	printf("jhsfdhsfd \n\r");
 	WDT -> WDT_MR = WDT_MR_WDDIS;
-	//can_init((CanInit){ .brp = 41, .phase1 = 6, .phase2 = 5, .propag = 1, .smp = 0, .sjw = 4 }, 0);
-	//init_servo();
-	//init_adc();
-	//init_solenoid();
+	can_init((CanInit){ .brp = 41, .phase1 = 6, .phase2 = 5, .propag = 1, .smp = 0, .sjw = 4 }, 0);
+	init_servo();
+	init_adc();
+	init_solenoid();
 	init_motor();
-	//init_position_regulator();
-	//init_encoder();
+	init_position_regulator();
+	init_encoder();
 	//test_servo_pwm();
-	test_motor();
+	//test_motor();
 	//test_solenoid();
 	
 	while (1)
@@ -46,9 +46,10 @@ int main(void)
 		send_score_to_node1(score);
 		commands recieved_commands = get_commands_from_node_1();
 		float position_setpoint = recieved_commands.slider_right;
+		position_setpoint = (position_setpoint/255) *100;
 		float position = read_encoder_position();
-		int output = position_regulator(position_setpoint, position);
-		printf("output: %f ", output);
+		float output = position_regulator(position_setpoint, position);
+		printf("position: %f, setpoint: %f, output: %f \n\r", position, position_setpoint, output);
 		set_motor_speed(output);
 		
 	}

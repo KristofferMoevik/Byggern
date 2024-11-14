@@ -1,71 +1,34 @@
 /*
- * tests.h
+ * fsm.h
  *
- * Created: 02.10.2024 11:08:15
+ * Created: 14.11.2024 09:53:27
  *  Author: eveneha
  */ 
-#pragma once
+
+
+#ifndef FSM_H_
+#define FSM_H_
+
 #include "uart.h"
 #include "sram.h"
 #include "adc.h"
 #include "oled.h"
-#include "external_memory_bus.h"
+#include "tests.h"
 #include "mcp2515.h"
+#include "joystick.h"
+#include "node_communication.h"
 
-
+#include <stdbool.h>
 #include <avr/io.h>
 #include <avr/delay.h>
 #include <time.h>
-#include <stdbool.h>
 
+// Global variables
+int current_tick;
+int ticks_per_second = 10;
+int current_score;
+can_message *recieved_message;
 
-#ifndef TESTS_H_
-#define TESTS_H_
-
-void test_lab_3(){
-	init_external_memory_bus();
-	init_UART();
-	flush_UART();
-	stdout = &uart_out;
-	printf("line");
-	SRAM_test();
-	printf("nytt prog");
-	init_clock_adc();
-	while(1){
-		adc_channels readings = read_channels();
-		printf("value ch1");
-		printf("The value of myNumber is: %d %d %d %d\n\r ", readings.joystick_left_right, readings.joystick_up_down, readings.shoot_button, readings.slider_right);
-		_delay_ms(10);
-	}
-}
-
-void test_lab_4(){
-	init_external_memory_bus();
-	oled_init();
-	oled_clear_screen();
-	while(1){
-		oled_print_string("pikk", 1,0);
-		_delay_ms(1000);
-		oled_clear_screen();
-		oled_print_string("pung", 0,0);
-		_delay_ms(1000);
-		oled_clear_screen();
-		_delay_ms(1000);
-	}
-}
-
-void test_oled() {
-	init_external_memory_bus();
-	oled_init();
-	oled_show_main_menu();
-	oled_clear_line(2); 
-	oled_print_string("> New Game", 2,1);
-	oled_clear_line(3); 
-	oled_clear_line(4); 
-	oled_clear_line(5); 
-}
-
-/*
 typedef struct {
 	uint8_t durations[4]; // Array to hold the duration values
 	uint8_t selected_index; // Index of the currently selected duration
@@ -89,8 +52,6 @@ Scoreboard scoreboard = {
 	.scores = {0, 0, 0, 0, 0},         // Initialize all scores to 0
 	.selected_user_index = 0           // Default to the first user, "Jo Arve"
 };
-
-int current_score;
 
 void sort_scoreboard(Scoreboard *scoreboard) {
 	uint8_t i, j;
@@ -169,7 +130,6 @@ void fsm_main() {
 	init_clock_adc();
 	
 	adc_channels readings;
-	
 	
 	//if(readings.joystick_up_down == 255 || readings.joystick_up_down == 0 || readings.shoot_button ==  255) {
 	while(1){
@@ -252,8 +212,8 @@ void fsm_main() {
 				
 				
 			case NEW_GAME:
-				current_score = 0; 
-				can_message *recieved_message;
+				current_tick = 0;
+				printf("Newgame"); 
 				send_commands_to_node_2_can();
 				can_recieve_message(recieved_message);
 				nextScreen = PLAYING_GAME;
@@ -261,12 +221,19 @@ void fsm_main() {
 				break; 
 				
 			case PLAYING_GAME:
-				can_message *recieved_message;
+				
 				send_commands_to_node_2_can();
 				can_recieve_message(recieved_message);
 				int detected_score = recieved_message->data[0];
 				if (detected_score){
 					current_score = current_score + 1;
+				}
+				
+				current_tick = current_tick + 1;
+				int play_for = game_duration_settings.durations[game_duration_settings.selected_index];
+				printf("play for: %i, played: %i", (ticks_per_second*play_for), current_tick);
+				if (current_tick > (ticks_per_second*play_for)){
+					nextScreen = SCOREBOARD;
 				}
 				break;
 				
@@ -421,118 +388,7 @@ void fsm_main() {
 		
 	}
 }
-*/
-
-void test_lab_5(){
-	init_external_memory_bus();
-	init_UART();
-	flush_UART();
-	stdout = &uart_out;
-	printf("test");
-	int fail = can_init(MODE_LOOPBACK);
-	if (!fail){
-		printf("successfully initializes");
-	}
-	uint8_t i = 0;
-	while (1)
-	{
-		can_message msg_send;
-		msg_send.id_lower = 0b00100000;
-		msg_send.id_higher = 0b00000000;
-		msg_send.message_length_bytes = 8;
-		
-		msg_send.data[0] = i;
-		msg_send.data[1] = i+1;
-		msg_send.data[2] = i+2;
-		msg_send.data[3] = i+3;
-		msg_send.data[4] = i+4;
-		msg_send.data[5] = i+5;
-		msg_send.data[6] = i+6;
-		msg_send.data[7] = i+7;
-		can_send_message(msg_send);
-				
-		can_message *recieved_msg;
-		can_recieve_message(recieved_msg);
-		
-		bool messages_are_the_same = true;
-		
-		for (uint8_t ii = 0; ii < msg_send.message_length_bytes; ++ii ){
-			if (!(msg_send.data[ii] == recieved_msg->data[ii])){
-				messages_are_the_same = false;
-				break;
-			}
-		}
-		
-		if (messages_are_the_same){
-			printf("messages are the same:)");
-		} else {
-			printf("!!! messages are not the same:(((");
-		}
-		
-		_delay_ms(1000);
-		
-		i = i + 8;
-		
-		if (i > 100){
-			break;
-		}
-		
-	}
-}
-
-void can_loopback_test() {
-	// To be placed inside empty main function 
-	init_external_memory_bus();
-	init_UART();
-	flush_UART();
-	stdout = &uart_out;
-	printf("test");
-	int fail = can_init(MODE_NORMAL);
-	if (!fail){
-		printf("successfully initializes");
-	}
-	init_UART();
-
-	while(1){
-		can_message msg_send;
-		msg_send.id_lower = 0b00100000;
-		msg_send.id_higher = 0b00000000;
-		msg_send.message_length_bytes = 8;
-		uint8_t i = 0;
-		msg_send.data[0] = i;
-		msg_send.data[1] = i+1;
-		msg_send.data[2] = i+2;
-		msg_send.data[3] = i+3;
-		msg_send.data[4] = i+4;
-		msg_send.data[5] = i+5;
-		msg_send.data[6] = i+6;
-		msg_send.data[7] = i+7;
-		can_send_message(msg_send);
-		printf("sent: ");
-		for (uint8_t ii = 0; ii < msg_send.message_length_bytes; ++ii ){
-			printf(" %i", msg_send.data[ii]);
-		}
-		printf(" \n\r");
-		_delay_ms(1000);
-	}
-	
-}
-
-void adc_test(){
-	init_external_memory_bus();
-	volatile char *ext_adc = (char *) 0x1400;
-	uint16_t ext_adc_size = 0x400;
-	printf("testing ADC");
-	oled_clear_screen();
-	for (uint16_t i = 0; i < ext_adc_size; i++) {
-		_delay_ms(100);
-		uint8_t some_value = rand();
-		ext_adc[i] = some_value;
-	}
-	printf("finished testing");
-}
 
 
 
-
-#endif /* TESTS_H_ */
+#endif /* FSM_H_ */

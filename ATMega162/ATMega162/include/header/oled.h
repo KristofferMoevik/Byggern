@@ -32,5 +32,8 @@ void send_char(char c);
 void oled_write_char_to_pos(char c, int page, int col);
 void oled_print_string(char str[], int line, int pos);
 void oled_show_main_menu(); 
+void oled_show_inst(); 
+void oled_show_duration(); 
+void oled_show_scoreboard(); 
 
 #endif /* OLED_H_ */

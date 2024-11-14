@@ -37,7 +37,7 @@ commands get_commands_from_node_1(){
 	recieved_commands.slider_right = msg_recieve.byte[3];
 	
 	if (success){
-		printf("commands: %i, %i, %i, %i \n\r", recieved_commands.joystick_up_down, recieved_commands.joystick_left_right, recieved_commands.shoot_button, recieved_commands.slider_right);
+		//printf("commands: %i, %i, %i, %i \n\r", recieved_commands.joystick_up_down, recieved_commands.joystick_left_right, recieved_commands.shoot_button, recieved_commands.slider_right);
 	}
 	
 	return recieved_commands;

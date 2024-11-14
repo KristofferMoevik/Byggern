@@ -74,6 +74,7 @@ int init_motor(){
 
 int read_encoder_position(){
 	int position = TC2->TC_CHANNEL[0].TC_CV;
+	position = (-position/2811.0) * 100.0;
 	return position;
 }
 
@@ -83,32 +84,29 @@ int read_encoder_direction(){
 }
 
 // input speed -100 -> 100
-int set_motor_speed(int speed){
+int set_motor_speed(float speed){
 	float wanted_period = 0.02;
-	int default_MCK = 84000000;
-	int X = 1024;
-	int CPRD = (wanted_period * default_MCK) / (2 * X);
-	PIOC->PIO_ODSR |= PIO_PC23;
-	PWM->PWM_CH_NUM[0].PWM_CDTY = CPRD/2;
-	/*
-	printf("speed: %i", speed);
+	float default_MCK = 84000000;
+	float X = 1024;
+	float CPRD = (wanted_period * default_MCK) / (2 * X);
+	
+	// printf("speed: %i", speed);
 	if (speed > 0) {
 		PIOC->PIO_ODSR |= PIO_PC23;
-		int spd = CPRD / (100/speed);
-		printf("spd1: %i", spd);
+		int spd = CPRD * (speed/100.0);
+		//printf("spd1: %i", spd);
 		PWM->PWM_CH_NUM[0].PWM_CDTY = spd;
 	}
 	if (speed < 0) {
 		PIOC->PIO_ODSR &= ~PIO_PC23;
-		int spd = CPRD*(-speed/100);
-		printf("spd2: %i", spd);
+		int spd = CPRD * (-speed/100.0);
+		//printf("spd2: %i", spd);
 		PWM->PWM_CH_NUM[0].PWM_CDTY = spd;
 	}
 	if (speed == 0) {
 		PIOC->PIO_ODSR |= PIO_PC23;
 		PWM->PWM_CH_NUM[0].PWM_CDTY = 0;
 	}
-	*/
 }
 
 int test_encoder(){
@@ -122,32 +120,17 @@ int test_encoder(){
 }
 
 int test_motor(){
-	int speed = 0;
-	int direction = 0;
-	
-	float wanted_period = 0.02;
-	int default_MCK = 84000000;
-	int X = 1024;
-	int CPRD = (wanted_period * default_MCK) / (2 * X);
-	int min_duty = (0.9/20) * CPRD;
-	int max_duty = (15/20) * CPRD;
-	
-	speed = min_duty;
+	float speed = 0;
+
 	init_motor();
 	while (1){
-		printf("speed: %i , direction: %i \n\r", speed, direction);
+		printf("speed_in: %f \n\r", speed);
 		set_motor_speed(speed);
 		_delay_ms(500);
-		if (speed == min_duty) {
-			speed = max_duty;
+		if (speed == -10.0) {
+			speed = 10.0;
 		} else {
-			speed = min_duty;
-		}
-		
-		if (direction == 0) {
-			direction = 1;
-		} else {
-			direction = 0;
+			speed = -10.0;
 		}
 	}
 }

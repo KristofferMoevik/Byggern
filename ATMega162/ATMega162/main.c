@@ -13,6 +13,7 @@
 #include "mcp2515.h"
 #include "joystick.h"
 #include "node_communication.h"
+#include "fsm.h"
 
 #include <stdbool.h>
 #include <avr/io.h>
@@ -27,10 +28,6 @@ int main(void){
 	init_UART();
 	flush_UART();
 	init_clock_adc();
-	//fsm_main();
-	test_oled(); 
-	stdout = &uart_out;
-	/* printf("test \n\r");
 	int fail = can_init(MODE_NORMAL);
 	if (!fail){
 		printf("successfully initializes \n\r");
@@ -38,10 +35,23 @@ int main(void){
 	
 	can_message *recieved_message;
 	calibrate_joystick();
+	/*
+	while (1)
+	{
+		fsm_main();
+	}
+	*/
+	
+	
+	//test_oled(); 
+	stdout = &uart_out;
+	printf("test \n\r");
+	
+	//calibrate_joystick();
 	while (1) {
 		send_commands_to_node_2_can();
 		can_recieve_message(recieved_message);
-		//can_print_msg(*recieved_message);
-	}*/
+		can_print_msg(*recieved_message);
+	}
 }
 

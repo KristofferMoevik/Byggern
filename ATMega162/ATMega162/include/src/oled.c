@@ -97,7 +97,7 @@ void oled_print_string(char str[], int line, int pos){
 }
 
 void oled_show_main_menu() {
-	oled_clear_screen();
+	//oled_clear_screen();
 	const char *menu_items[] = {"New Game", "Instructions", "Scoreboard", "Set Duration"};
     int num_items = sizeof(menu_items) / sizeof(menu_items[0]);
 
@@ -109,6 +109,41 @@ void oled_show_main_menu() {
 		//oled_print_string(" ",i); 
 		oled_print_string(menu_items[i-2],i,0);
     }
+}
+
+void oled_show_inst() {
+	//oled_clear_screen();
+
+	oled_goto_pos(0,20);
+	oled_print_string("INSTRUCTIONS",1,30);
+
+	//oled_goto_pos(1,0);
+	oled_print_string("Controll the shooter with", 2,0);
+	//oled_goto_pos(2,0);
+	oled_print_string("slider and joystick.",3,0);
+	//oled_goto_pos(3,0);
+	oled_print_string("Shoot by pressing button.",4,0);
+	//oled_goto_pos(4,0);
+	oled_print_string("Score as many goals as", 5,0); 
+	oled_print_string("possible within the limit",6,0);
+
+	oled_print_string("Main Menu",7,83);
+}
+
+void oled_show_duration() {
+	//oled_clear_screen(); 
+	oled_print_string("Set Game Duration", 1, 30); 
+	oled_print_string("15 seconds", 2,0); 
+	oled_print_string("30 seconds", 3,0);
+	oled_print_string("45 seconds", 4,0);
+	oled_print_string("60 seconds", 5,0);
+}
+
+void oled_show_scoreboard() {
+	//oled_clear_screen(); 
+	oled_print_string("Scoreboard", 0 ,30); 
+	oled_print_string("Main menu", 7, 83 ); 
+	 
 }
 
 
