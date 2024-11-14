@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000004d8  00000000  00000000  00006f30  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000b0a  00000000  00000000  00007408  2**0
+ 10 .debug_str    00000b16  00000000  00000000  00007408  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000013f8  00000000  00000000  00007f12  2**0
+ 11 .debug_loc    000013f8  00000000  00000000  00007f1e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000178  00000000  00000000  0000930a  2**0
+ 12 .debug_ranges 00000178  00000000  00000000  00009316  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -437,21 +437,21 @@ adc_channels read_channels(){
      312:	cf 91       	pop	r28
      314:	08 95       	ret
 
-00000316 <send_command>:
+00000316 <send_cmd_to_oled>:
 #include "oled.h"
 
 #include <avr/pgmspace.h>
 
-void send_command(uint8_t cmd){
-	OLED_CONTROL = cmd; 
+void send_cmd_to_oled(uint8_t cmd){
+	OLED_CONTROL_ADDRESS = cmd; 
      316:	80 93 00 10 	sts	0x1000, r24	; 0x801000 <__bss_end+0xc4c>
      31a:	08 95       	ret
 
-0000031c <send_data>:
+0000031c <send_data_to_oled>:
 }
 
-void send_data(uint8_t data){
-	OLED_DATA = data; 
+void send_data_to_oled(uint8_t data){
+	OLED_DATA_ADDRESS = data; 
      31c:	80 93 00 12 	sts	0x1200, r24	; 0x801200 <__bss_end+0xe4c>
      320:	08 95       	ret
 
@@ -461,84 +461,84 @@ void send_data(uint8_t data){
 
 void oled_init() {
     
-	send_command(0xAE);  // display off
+	send_cmd_to_oled(0xAE);
      322:	8e ea       	ldi	r24, 0xAE	; 174
-     324:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0xA1);  // segment remap
+     324:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0xA1);
      328:	81 ea       	ldi	r24, 0xA1	; 161
-     32a:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0xDA);  // common pads hardware: alternative
+     32a:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0xDA);
      32e:	8a ed       	ldi	r24, 0xDA	; 218
-     330:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x12);  // send alternative pad configuration
+     330:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x12);
      334:	82 e1       	ldi	r24, 0x12	; 18
-     336:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0xC8);  // common output scan direction: com63~com0
+     336:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0xC8);
      33a:	88 ec       	ldi	r24, 0xC8	; 200
-     33c:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     33c:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
     
-	send_command(0xA8);  // multiplex ratio mode: 63
+	send_cmd_to_oled(0xA8);
      340:	88 ea       	ldi	r24, 0xA8	; 168
-     342:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x3F);  // ratio value
+     342:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x3F);
      346:	8f e3       	ldi	r24, 0x3F	; 63
-     348:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     348:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
     
-	send_command(0xD5);  // display divide ratio/oscillator frequency mode
+	send_cmd_to_oled(0xD5);
      34c:	85 ed       	ldi	r24, 0xD5	; 213
-     34e:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x80);  // frequency value
+     34e:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x80);
      352:	80 e8       	ldi	r24, 0x80	; 128
-     354:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     354:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0x81);  // contrast control
+    send_cmd_to_oled(0x81);
      358:	81 e8       	ldi	r24, 0x81	; 129
-     35a:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x50);  // contrast value
+     35a:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x50);
      35e:	80 e5       	ldi	r24, 0x50	; 80
-     360:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     360:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0xD9);  // set pre-charge period
+    send_cmd_to_oled(0xD9);
      364:	89 ed       	ldi	r24, 0xD9	; 217
-     366:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x21);  // pre-charge value
+     366:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x21);
      36a:	81 e2       	ldi	r24, 0x21	; 33
-     36c:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     36c:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0x20);  // Set Memory Addressing Mode
+    send_cmd_to_oled(0x20);
      370:	80 e2       	ldi	r24, 0x20	; 32
-     372:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x02);  // set to page addressing mode
+     372:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x02);
      376:	82 e0       	ldi	r24, 0x02	; 2
-     378:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     378:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0xDB);  // VCOM deselect level mode
+    send_cmd_to_oled(0xDB);
      37c:	8b ed       	ldi	r24, 0xDB	; 219
-     37e:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x30);  // deselect level value
+     37e:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x30);
      382:	80 e3       	ldi	r24, 0x30	; 48
-     384:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     384:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0xAD);  // master configuration
+    send_cmd_to_oled(0xAD);
      388:	8d ea       	ldi	r24, 0xAD	; 173
-     38a:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0x00);  // master config value
+     38a:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0x00);
      38e:	80 e0       	ldi	r24, 0x00	; 0
-     390:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     390:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 	
-    send_command(0xA4);  // output follows RAM content
+    send_cmd_to_oled(0xA4);
      394:	84 ea       	ldi	r24, 0xA4	; 164
-     396:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0xA6);  // set normal display
+     396:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0xA6);
      39a:	86 ea       	ldi	r24, 0xA6	; 166
-     39c:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-    send_command(0xAF);  // display on
+     39c:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+    send_cmd_to_oled(0xAF);
      3a0:	8f ea       	ldi	r24, 0xAF	; 175
-     3a2:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     3a2:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
      3a6:	08 95       	ret
 
 000003a8 <oled_goto_pos>:
-		send_data(0x0);	
+		send_data_to_oled(0x0);	
 	}
 	
 }
@@ -547,14 +547,14 @@ void oled_goto_pos(int page_start, int segment){
      3a8:	cf 93       	push	r28
      3aa:	df 93       	push	r29
      3ac:	eb 01       	movw	r28, r22
-	send_command(page_start	| 0xB0); // Set page
+	send_cmd_to_oled(page_start	| 0xB0);
      3ae:	80 6b       	ori	r24, 0xB0	; 176
-     3b0:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-	send_command(segment & 0x0F);
+     3b0:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+	send_cmd_to_oled(segment & 0x0F);
      3b4:	8c 2f       	mov	r24, r28
      3b6:	8f 70       	andi	r24, 0x0F	; 15
-     3b8:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
-	send_command(((segment & 0xF0) >> 4) | (0x10));
+     3b8:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
+	send_cmd_to_oled(((segment & 0xF0) >> 4) | (0x10));
      3bc:	ce 01       	movw	r24, r28
      3be:	80 7f       	andi	r24, 0xF0	; 240
      3c0:	99 27       	eor	r25, r25
@@ -567,14 +567,14 @@ void oled_goto_pos(int page_start, int segment){
      3ce:	95 95       	asr	r25
      3d0:	87 95       	ror	r24
      3d2:	80 61       	ori	r24, 0x10	; 16
-     3d4:	0e 94 8b 01 	call	0x316	; 0x316 <send_command>
+     3d4:	0e 94 8b 01 	call	0x316	; 0x316 <send_cmd_to_oled>
 }
      3d8:	df 91       	pop	r29
      3da:	cf 91       	pop	r28
      3dc:	08 95       	ret
 
 000003de <oled_clear_screen>:
-    send_command(0xAF);  // display on
+    send_cmd_to_oled(0xAF);
 	
 }
 
@@ -605,9 +605,9 @@ void oled_clear_screen(){
      402:	c0 e0       	ldi	r28, 0x00	; 0
      404:	d0 e0       	ldi	r29, 0x00	; 0
      406:	04 c0       	rjmp	.+8      	; 0x410 <__DATA_REGION_LENGTH__+0x10>
-			send_data(0x0);	
+			send_data_to_oled(0x0);	
      408:	80 e0       	ldi	r24, 0x00	; 0
-     40a:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data>
+     40a:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data_to_oled>
 	oled_goto_pos(0,0);
 	int pages = 8;
 	int coloums = 128;
@@ -631,7 +631,7 @@ void oled_clear_screen(){
      41e:	64 f3       	brlt	.-40     	; 0x3f8 <oled_clear_screen+0x1a>
 		oled_goto_pos(i,0);
 		for (int ii = 0; ii < coloums; ii++){
-			send_data(0x0);	
+			send_data_to_oled(0x0);	
 		}
 	}
 }
@@ -655,9 +655,9 @@ void oled_clear_line(int line){
      436:	c0 e0       	ldi	r28, 0x00	; 0
      438:	d0 e0       	ldi	r29, 0x00	; 0
      43a:	04 c0       	rjmp	.+8      	; 0x444 <oled_clear_line+0x1a>
-		send_data(0x0);	
+		send_data_to_oled(0x0);	
      43c:	80 e0       	ldi	r24, 0x00	; 0
-     43e:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data>
+     43e:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data_to_oled>
 }
 
 void oled_clear_line(int line){
@@ -668,7 +668,7 @@ void oled_clear_line(int line){
      444:	c0 38       	cpi	r28, 0x80	; 128
      446:	d1 05       	cpc	r29, r1
      448:	cc f3       	brlt	.-14     	; 0x43c <oled_clear_line+0x12>
-		send_data(0x0);	
+		send_data_to_oled(0x0);	
 	}
 	
 }
@@ -677,9 +677,9 @@ void oled_clear_line(int line){
      44e:	08 95       	ret
 
 00000450 <send_char>:
-	send_command(page_start	| 0xB0); // Set page
-	send_command(segment & 0x0F);
-	send_command(((segment & 0xF0) >> 4) | (0x10));
+	send_cmd_to_oled(page_start	| 0xB0);
+	send_cmd_to_oled(segment & 0x0F);
+	send_cmd_to_oled(((segment & 0xF0) >> 4) | (0x10));
 }
 
 void send_char(char c){
@@ -707,10 +707,10 @@ void send_char(char c){
      476:	e0 59       	subi	r30, 0x90	; 144
      478:	ff 4f       	sbci	r31, 0xFF	; 255
      47a:	84 91       	lpm	r24, Z
-		send_data(letter_byte);
-     47c:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data>
-	send_command(segment & 0x0F);
-	send_command(((segment & 0xF0) >> 4) | (0x10));
+		send_data_to_oled(letter_byte);
+     47c:	0e 94 8e 01 	call	0x31c	; 0x31c <send_data_to_oled>
+	send_cmd_to_oled(segment & 0x0F);
+	send_cmd_to_oled(((segment & 0xF0) >> 4) | (0x10));
 }
 
 void send_char(char c){
@@ -720,7 +720,7 @@ void send_char(char c){
      484:	d1 05       	cpc	r29, r1
      486:	5c f3       	brlt	.-42     	; 0x45e <send_char+0xe>
 		char letter_byte = pgm_read_byte(&font5[c - 32][i]);
-		send_data(letter_byte);
+		send_data_to_oled(letter_byte);
 	}
 	
 }
@@ -1039,10 +1039,10 @@ void flush_UART( void )
 0000065e <recieve_char_UART>:
 
 unsigned char recieve_char_UART(){
-	while ( !( UCSR0A & (1 << RXC0) ) );/* Wait till data is received */
+	while ( !( UCSR0A & (1 << RXC0) ) );
      65e:	5f 9b       	sbis	0x0b, 7	; 11
      660:	fe cf       	rjmp	.-4      	; 0x65e <recieve_char_UART>
-	return(UDR0);			/* Return the byte*/
+	return(UDR0);
      662:	8c b1       	in	r24, 0x0c	; 12
 }
      664:	08 95       	ret
@@ -1050,7 +1050,7 @@ unsigned char recieve_char_UART(){
 00000666 <transmit_char_UART>:
 
 void transmit_char_UART(char letter){
-	while (! (UCSR0A & (1<<UDRE0)));	/* Wait for empty transmit buffer*/
+	while (! (UCSR0A & (1<<UDRE0))){};
      666:	5d 9b       	sbis	0x0b, 5	; 11
      668:	fe cf       	rjmp	.-4      	; 0x666 <transmit_char_UART>
 	UDR0 = letter;

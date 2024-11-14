@@ -10,47 +10,47 @@
 
 #include <avr/pgmspace.h>
 
-void send_command(uint8_t cmd){
-	OLED_CONTROL = cmd; 
+void send_cmd_to_oled(uint8_t cmd){
+	OLED_CONTROL_ADDRESS = cmd; 
 }
 
-void send_data(uint8_t data){
-	OLED_DATA = data; 
+void send_data_to_oled(uint8_t data){
+	OLED_DATA_ADDRESS = data; 
 }
 
 
 void oled_init() {
     
-	send_command(0xAE);  // display off
-    send_command(0xA1);  // segment remap
-    send_command(0xDA);  // common pads hardware: alternative
-    send_command(0x12);  // send alternative pad configuration
-    send_command(0xC8);  // common output scan direction: com63~com0
+	send_cmd_to_oled(0xAE);
+    send_cmd_to_oled(0xA1);
+    send_cmd_to_oled(0xDA);
+    send_cmd_to_oled(0x12);
+    send_cmd_to_oled(0xC8);
     
-	send_command(0xA8);  // multiplex ratio mode: 63
-    send_command(0x3F);  // ratio value
+	send_cmd_to_oled(0xA8);
+    send_cmd_to_oled(0x3F);
     
-	send_command(0xD5);  // display divide ratio/oscillator frequency mode
-    send_command(0x80);  // frequency value
+	send_cmd_to_oled(0xD5);
+    send_cmd_to_oled(0x80);
 	
-    send_command(0x81);  // contrast control
-    send_command(0x50);  // contrast value
+    send_cmd_to_oled(0x81);
+    send_cmd_to_oled(0x50);
 	
-    send_command(0xD9);  // set pre-charge period
-    send_command(0x21);  // pre-charge value
+    send_cmd_to_oled(0xD9);
+    send_cmd_to_oled(0x21);
 	
-    send_command(0x20);  // Set Memory Addressing Mode
-    send_command(0x02);  // set to page addressing mode
+    send_cmd_to_oled(0x20);
+    send_cmd_to_oled(0x02);
 	
-    send_command(0xDB);  // VCOM deselect level mode
-    send_command(0x30);  // deselect level value
+    send_cmd_to_oled(0xDB);
+    send_cmd_to_oled(0x30);
 	
-    send_command(0xAD);  // master configuration
-    send_command(0x00);  // master config value
+    send_cmd_to_oled(0xAD);
+    send_cmd_to_oled(0x00);
 	
-    send_command(0xA4);  // output follows RAM content
-    send_command(0xA6);  // set normal display
-    send_command(0xAF);  // display on
+    send_cmd_to_oled(0xA4);
+    send_cmd_to_oled(0xA6);
+    send_cmd_to_oled(0xAF);
 	
 }
 
@@ -62,7 +62,7 @@ void oled_clear_screen(){
 	for (int i = 0; i < pages; i++){
 		oled_goto_pos(i,0);
 		for (int ii = 0; ii < coloums; ii++){
-			send_data(0x0);	
+			send_data_to_oled(0x0);	
 		}
 	}
 }
@@ -71,21 +71,21 @@ void oled_clear_line(int line){
 	oled_goto_pos(line,0);
 	int coloums = 128;	
 	for (int ii = 0; ii < coloums; ii++){
-		send_data(0x0);	
+		send_data_to_oled(0x0);	
 	}
 	
 }
 
 void oled_goto_pos(int page_start, int segment){
-	send_command(page_start	| 0xB0); // Set page
-	send_command(segment & 0x0F);
-	send_command(((segment & 0xF0) >> 4) | (0x10));
+	send_cmd_to_oled(page_start	| 0xB0);
+	send_cmd_to_oled(segment & 0x0F);
+	send_cmd_to_oled(((segment & 0xF0) >> 4) | (0x10));
 }
 
 void send_char(char c){
 	for (int i = 0; i < font_size; i++){
 		char letter_byte = pgm_read_byte(&font5[c - 32][i]);
-		send_data(letter_byte);
+		send_data_to_oled(letter_byte);
 	}
 	
 }

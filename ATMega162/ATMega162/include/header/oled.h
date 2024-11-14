@@ -16,12 +16,12 @@
 #ifndef OLED_H_
 #define OLED_H_
 
-#define OLED_WIDTH 128
-#define OLED_HEIGHT	64 
+#define OLED_SCREEN_WIDTH 128
+#define OLED_SCREEN_HEIGHT	64 
 #define OLED_PAGES 8 
 
-#define OLED_CONTROL *((volatile char*)ADDR_BASE + ADDR_OFFSET_OLED_C)
-#define OLED_DATA *((volatile char*)ADDR_BASE + ADDR_OFFSET_OLED_D)
+#define OLED_CONTROL_ADDRESS *((volatile char*)ADDR_BASE + ADDR_OFFSET_OLED_C)
+#define OLED_DATA_ADDRESS *((volatile char*)ADDR_BASE + ADDR_OFFSET_OLED_D)
 
 
 void oled_init();

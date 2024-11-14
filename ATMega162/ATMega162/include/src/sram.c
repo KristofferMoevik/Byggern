@@ -48,7 +48,7 @@ void test_sram_latch(){
 	DDRE = 0xFF;
 	DDRA = 0xFF;
 	PORTA |= (1 << PA0);
-	PORTE |= (1 << PE1); // Enable
+	PORTE |= (1 << PE1);
 
 
 	while (1) {
