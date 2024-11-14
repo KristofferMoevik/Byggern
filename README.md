@@ -1,2 +1,2 @@
 # Byggern
-Lab 1 in the Byggern
+Link to repo: https://github.com/KristofferMoevik/Byggern
