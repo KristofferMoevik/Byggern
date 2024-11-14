@@ -30,5 +30,15 @@ int test_solenoid(){
 	}
 }
 
+int shoot_solenoid(int shoot){
+	if (shoot)
+	{
+		PIOB->PIO_ODSR &= ~PIO_PB25;
+	}
+	else {
+		PIOB->PIO_ODSR |= PIO_PB25;
+	}
+}
+
 
 #endif /* SOLENOID_H_ */

@@ -26,7 +26,6 @@ void test_lab_3(){
 	init_external_memory_bus();
 	init_UART();
 	flush_UART();
-	stdout = &uart_out;
 	printf("line");
 	SRAM_test();
 	printf("nytt prog");

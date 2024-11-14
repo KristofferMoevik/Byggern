@@ -16,8 +16,8 @@ float frequency;
 float e_sum_windup;
 
 void init_position_regulator(){
-	K_p = 1;
-	K_i = 100000;
+	K_p = 1.5;
+	K_i = 1000000;
 	e_sum = 0;
 	frequency = 84000000;
 	e_sum_windup = 300;
@@ -33,7 +33,7 @@ float position_regulator(float position_setpoint, float position){
 		e_sum = e_sum_windup;
 	}
 	float output = P + I;
-	printf("P: %f, I: %f", P, I);
+	//printf("P: %f, I: %f", P, I);
 	/*
 	if (output < -100.0){
 		output = -100.0;

@@ -41,17 +41,34 @@ int main(void)
 	
 	while (1)
 	{
-		score = poll_score();
-		printf("score: %i , ", score);
+		// Get score
+		int score = poll_score();
+		
+		printf("score: %i \n\r ", score);
 		send_score_to_node1(score);
 		commands recieved_commands = get_commands_from_node_1();
-		float position_setpoint = recieved_commands.slider_right;
-		position_setpoint = (position_setpoint/255) *100;
-		float position = read_encoder_position();
-		float output = position_regulator(position_setpoint, position);
-		printf("position: %f, setpoint: %f, output: %f \n\r", position, position_setpoint, output);
-		set_motor_speed(output);
 		
+		if (recieved_commands.reset_score) {
+			send_score_to_node1(score);
+			printf("zeroed");
+			zero_score();
+		}
+		else {
+			// Positon control
+			float position_setpoint = recieved_commands.position_setpoint;
+			float position = read_encoder_position();
+			float output = position_regulator(position_setpoint, position);
+			printf("position: %f, setpoint: %f, output: %f \n\r", position, position_setpoint, output);
+			set_motor_speed(output);
+		
+			// Set servo
+			float servo_setpoint = recieved_commands.servo_setpoint;
+			set_servo(servo_setpoint);
+		
+			// Shoot solenoid
+			int shoot = recieved_commands.shoot_button;
+			shoot_solenoid(shoot);
+		}
 	}
 }
 

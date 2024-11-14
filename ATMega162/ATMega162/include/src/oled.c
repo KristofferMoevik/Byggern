@@ -7,6 +7,7 @@
 
 #pragma once
 #include "oled.h"
+
 #include <avr/pgmspace.h>
 
 void send_command(uint8_t cmd){
@@ -105,7 +106,7 @@ void oled_show_main_menu() {
 	oled_print_string("Main Menu", 1, 35);
 
     for (int i = 2; i < num_items+2; i++) {
-        oled_goto_pos(i, 0); // One item per page
+       // oled_goto_pos(i, 0); // One item per page
 		//oled_print_string(" ",i); 
 		oled_print_string(menu_items[i-2],i,0);
     }
@@ -114,7 +115,6 @@ void oled_show_main_menu() {
 void oled_show_inst() {
 	//oled_clear_screen();
 
-	oled_goto_pos(0,20);
 	oled_print_string("INSTRUCTIONS",1,30);
 
 	//oled_goto_pos(1,0);
@@ -145,6 +145,12 @@ void oled_show_scoreboard() {
 	oled_print_string("Main menu", 7, 83 ); 
 	 
 }
+
+void oled_show_new_game( ) {
+	oled_print_string("Pick user", 0, 30); 	
+}
+
+
 
 
 

@@ -46,7 +46,7 @@ void test_uart(){
 	{
 		c=recieve_char_UART();
 		transmit_char_UART(c);
-		stdout = &uart_out;
+		//stdout = &uart_out;
 		printf("Hello, world!\n");
 	}
 	

@@ -9,6 +9,8 @@
 #ifndef NODE_COMMUNICATION_H_
 #define NODE_COMMUNICATION_H_
 
+#include "mcp2515.h"
+
 void send_commands_to_node_2_can(){
 	adc_channels adc_values = read_channels();
 	int joystick_x_value = adc_values.joystick_left_right;
@@ -30,6 +32,14 @@ void send_commands_to_node_2_can(){
 	can_send_message(msg_send);
 }
 
+void reset_score_node_2_can(){
+	can_message msg_send;
+	msg_send.id_lower =  2;
+	msg_send.id_higher = 0b00000000;
+	msg_send.message_length_bytes = 0;
+		
+	can_send_message(msg_send);
+}
 
 
 

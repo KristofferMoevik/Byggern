@@ -311,7 +311,7 @@ uint8_t can_init(uint8_t mode){
 		printf (" MCP2515 is NOT in configuration mode after reset !\n");
 		return 1;
 	} else {
-		printf(" MCP2515 is in config mode");
+		printf(" MCP2515 is in config mode \n\r");
 	}
 	
 	// must be in config mode for this to work !!! TQ=
@@ -322,7 +322,7 @@ uint8_t can_init(uint8_t mode){
 	
 	can_write(MCP_CANCTRL, mode);
 	uint8_t d = can_read(MCP_CANSTAT);
-	printf(" CANMODE = %d \n", d);
+	printf(" CANMODE = %i \n\r", d);
 	
 	
 	

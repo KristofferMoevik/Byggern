@@ -11,24 +11,24 @@
 
 #include "adc.h"
 
-int score;
+int score_state;
 int sensor_blocked;
 
 int zero_score(){
-	score = 0;
+	score_state = 0;
 	sensor_blocked = 0;
 }
 
 int poll_score(){
 	int adc_value = adc_read();
 	if ((adc_value < 1500) && (sensor_blocked == 0)) {
-		score += 1;
+		score_state += 1;
 		sensor_blocked = 1;
 	}
 	if (adc_value > 1500) {
 		sensor_blocked = 0;
 	}
-	return score;
+	return score_state;
 }
 
 

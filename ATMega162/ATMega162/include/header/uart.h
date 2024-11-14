@@ -26,8 +26,7 @@ void transmit_char_UART(char letter);
 void send_string_UART(char *str);
 
 
-static FILE uart_out = FDEV_SETUP_STREAM(transmit_char_UART, recieve_char_UART,
-_FDEV_SETUP_WRITE);
+
 
 void test_uart();
 

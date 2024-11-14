@@ -35,5 +35,6 @@ void oled_show_main_menu();
 void oled_show_inst(); 
 void oled_show_duration(); 
 void oled_show_scoreboard(); 
+void oled_show_new_game();
 
 #endif /* OLED_H_ */

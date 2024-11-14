@@ -13,7 +13,6 @@
 #include "sram.h"
 #include "adc.h"
 #include "oled.h"
-#include "tests.h"
 #include "mcp2515.h"
 #include "joystick.h"
 #include "node_communication.h"
@@ -72,11 +71,7 @@ void sort_scoreboard(Scoreboard *scoreboard) {
 	}
 }
 void update_scoreboard(Scoreboard *scoreboard, uint8_t user_index, uint16_t new_score) {
-	if (user_index < NUM_USERS) {
-		if (new_score < scoreboard->scores[user_index] ) {
-			scoreboard->scores[user_index] = new_score;
-		}
-	}
+	scoreboard->scores[user_index] = new_score;	
 }
  
 
@@ -104,39 +99,45 @@ typedef enum {
 	SET_DURATION	
 } GUIScreen;
 
+typedef enum {
+	JO, 
+	STUDASS, 
+	KRISTOFFER, 
+	ALF, 
+	EVEN, 
+	init 
+} User;
+
+User username = init;
+User nextUsername = init;  
+
 int main_menu_marked_inst = 0; 
 int main_menu_marked_inst2 = 0;
 
 void fsm_main() {
-	init_external_memory_bus();
-	init_UART();
-	flush_UART();
-	stdout = &uart_out;
-	
 	GUIScreen screen = MAIN_MENU;  
-	GUIScreen nextScreen;
+	GUIScreen nextScreen = MAIN_MENU;
 	
 	MainMenuPtrState mainMenuPtr = STATE_NEW_GAME;  
-	MainMenuPtrState nextmainMenuPtr; 
+	MainMenuPtrState nextmainMenuPtr = STATE_NEW_GAME; 
 	
 	SetDurationPtrState currentDur = THIRTY; 
-	SetDurationPtrState nextDur; 
-	
-	init_external_memory_bus();
-	oled_init();
-	oled_show_main_menu(); 
+	SetDurationPtrState nextDur  = THIRTY; 
 	
 	
-	init_clock_adc();
 	
 	adc_channels readings;
 	
 	//if(readings.joystick_up_down == 255 || readings.joystick_up_down == 0 || readings.shoot_button ==  255) {
+	oled_clear_screen();
+	oled_goto_pos(0,0); 
+	
 	while(1){
 		readings = read_channels();
 		
 		switch(screen) {
 			case MAIN_MENU: 
+				
 				switch(mainMenuPtr) {
 					case STATE_NEW_GAME:
 						//oled_clear_screen();
@@ -208,32 +209,139 @@ void fsm_main() {
 					oled_clear_screen();
 				}
 				mainMenuPtr = nextmainMenuPtr;
+				_delay_ms(300); 
 				break; 
 				
 				
 			case NEW_GAME:
 				current_tick = 0;
-				printf("Newgame"); 
-				send_commands_to_node_2_can();
+				current_score = 0;
+
+				printf("Newgame");
+				reset_score_node_2_can();
+				//send_commands_to_node_2_can();
 				can_recieve_message(recieved_message);
-				nextScreen = PLAYING_GAME;
+				oled_show_new_game();
+						for (int i = 0 ; i < NUM_USERS; i++){
+							oled_print_string(scoreboard.user_names[i], i+1, 0);
+						}
+						
+						oled_clear_line(scoreboard.selected_user_index+1);
+						oled_print_string(scoreboard.user_names[scoreboard.selected_user_index], scoreboard.selected_user_index + 1, 0);
+				_delay_ms(100);
+				switch(username){
+					case init : 
+						nextUsername = JO; 
+						
+						
+						
+					case JO: 
+						oled_clear_line(1);
+						oled_print_string("> Jo Arve", 1 ,0);
+						if (readings.joystick_up_down > 230) {
+							nextUsername = EVEN; 
+							 
+							} else if (readings.joystick_up_down < 50) {
+								nextUsername = STUDASS; 
+						}
+						
+						if (readings.shoot_button == 255 ){
+							scoreboard.selected_user_index = 0;
+							nextScreen = PLAYING_GAME;
+							oled_clear_screen();
+							oled_print_string("GAME STARTED!! ", 5, 30); 
+						}
+						
+						break; 
+					case STUDASS:
+						oled_clear_line(2);
+						oled_print_string("> Studass ", 2 ,0);
+						if (readings.joystick_up_down > 230) {
+							nextUsername = JO;
+							
+							} else if (readings.joystick_up_down < 50) {
+							nextUsername = KRISTOFFER;
+						}
+						
+						if (readings.shoot_button == 255 ){
+							scoreboard.selected_user_index = 1;
+							nextScreen = PLAYING_GAME;
+							oled_clear_screen();
+							oled_print_string("GAME STARTED!! ", 5, 30);
+						}
+						break;
+					case KRISTOFFER:
+						oled_clear_line(3);
+						oled_print_string("> Kristoffer", 3 ,0);
+						if (readings.joystick_up_down > 230) {
+							nextUsername = STUDASS;
+							
+							} else if (readings.joystick_up_down < 50) {
+							nextUsername = ALF;
+						}
+						
+						if (readings.shoot_button == 255 ){
+							scoreboard.selected_user_index = 2;
+							nextScreen = PLAYING_GAME;
+							oled_clear_screen();
+							oled_print_string("GAME STARTED!! ", 5, 30);
+						}
+						break; 
+					case ALF:
+						oled_clear_line(4);
+						oled_print_string("> Alf", 4 ,0);
+						if (readings.joystick_up_down > 230) {
+							nextUsername = KRISTOFFER;
+							
+							} else if (readings.joystick_up_down < 50) {
+							nextUsername = EVEN;
+						}
+						
+						if (readings.shoot_button == 255 ){
+							scoreboard.selected_user_index = 3;
+							nextScreen = PLAYING_GAME;
+							oled_clear_screen();
+							oled_print_string("GAME STARTED!! ", 5, 30);
+						}
+						break;
+					case EVEN:
+						oled_clear_line(5);
+						oled_print_string("> Even", 5 ,0);
+						if (readings.joystick_up_down > 230) {
+							nextUsername = ALF;
+							
+							} else if (readings.joystick_up_down < 50) {
+							nextUsername = JO;
+						}
+						
+						if (readings.shoot_button == 255 ){
+							scoreboard.selected_user_index = 4;
+							nextScreen = PLAYING_GAME;
+							oled_clear_screen();
+							oled_print_string("GAME STARTED!! ", 5, 30);
+						}
+						break;
+				}
+				username = nextUsername; 
 				
+				_delay_ms(100); 
 				break; 
 				
 			case PLAYING_GAME:
 				
+				
+				
 				send_commands_to_node_2_can();
 				can_recieve_message(recieved_message);
-				int detected_score = recieved_message->data[0];
-				if (detected_score){
-					current_score = current_score + 1;
-				}
+				current_score = recieved_message->data[0];
+				printf("score: %i \n\r", current_score);
 				
 				current_tick = current_tick + 1;
 				int play_for = game_duration_settings.durations[game_duration_settings.selected_index];
-				printf("play for: %i, played: %i", (ticks_per_second*play_for), current_tick);
+				printf("play for: %i, played: %i \n\r", (ticks_per_second*play_for), current_tick);
 				if (current_tick > (ticks_per_second*play_for)){
 					nextScreen = SCOREBOARD;
+					//oled_print_string("GAME OVER!!", 5, 50 ); 
 				}
 				break;
 				
@@ -257,19 +365,22 @@ void fsm_main() {
 				if (main_menu_marked_inst == 1 && readings.shoot_button == 255) {
 					nextScreen = MAIN_MENU; 
 				}
-				
+				_delay_ms(300); 
 				break; 
 			
 			case SCOREBOARD:
-				
+				update_scoreboard(&scoreboard, scoreboard.selected_user_index, current_score); 
+				sort_scoreboard(&scoreboard); 
+				char score[3]; 
 				
 				switch (main_menu_marked_inst2) {
 					case 0:
 						oled_show_scoreboard();
 						// you already have a sorted scoreboard from calling sort and update scoreboard
 						for (int i = 0; i < NUM_USERS; i++) {
+							sprintf(score, "%d", scoreboard.scores[i]); 
 							oled_print_string(scoreboard.user_names[i],i+1, 0);
-							oled_print_string(scoreboard.scores[i],i+1, 113);
+							oled_print_string(score,i+1, 113);
 						}
 						
 						
@@ -278,8 +389,9 @@ void fsm_main() {
 						oled_show_scoreboard();
 						// you already have a sorted scoreboard from calling sort and update scoreboard
 						for (int i = 0; i < NUM_USERS; i++) {
+							sprintf(score, "%d", scoreboard.scores[i]);
 							oled_print_string(scoreboard.user_names[i],i+1, 0);
-							oled_print_string(scoreboard.scores[i],i+1, 113);
+							oled_print_string(score,i+1, 113);
 						}
 						oled_clear_line(7);
 						oled_print_string("> Main Menu", 7,78);
@@ -295,7 +407,7 @@ void fsm_main() {
 				}
 				
 				
-				
+				_delay_ms(300); 
 				break; 
 				
 			case SET_DURATION:			
@@ -314,6 +426,7 @@ void fsm_main() {
 					
 					if (readings.shoot_button == 255) {
 						game_duration_settings.selected_index = 0; 
+						nextScreen = MAIN_MENU; 
 					}
 					break;
 					
@@ -366,7 +479,8 @@ void fsm_main() {
 					}
 					break;
 				}
-				currentDur = nextDur; 			 
+				currentDur = nextDur; 
+				_delay_ms(300); 			 
 				break; 
 			
 			
@@ -377,13 +491,19 @@ void fsm_main() {
 		screen = nextScreen; 
 	
 
-		
-		 
-		printf("Current state:\t\t %d\n\r", mainMenuPtr);
-		printf("Next state: \t\t %d\n\r", nextmainMenuPtr);
+		/*
+		printf("Screen:           \t%i\n\r", screen);
+		printf("Next Screen:      \t%i\n\r", nextScreen);
 
-		printf("joystick up down: \t%i\n\r", readings.joystick_up_down); 
-		
+		printf("Username:        \t%i\n\r", username);
+		printf("Next Username:    \t%i\n\r", nextUsername);
+
+		printf("Current State:    \t%i\n\r", mainMenuPtr);
+		printf("Next State:       \t%i\n\r", nextmainMenuPtr);
+
+		printf("Joystick Up/Down: \t%i\n\r", readings.joystick_up_down);
+		printf("current score:	  \t%i\n\r", current_score); 
+		*/
 		//_delay_ms(100);  
 		
 	}
